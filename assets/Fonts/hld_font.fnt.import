@@ -1,0 +1,17 @@
+[remap]
+
+importer="font_data_bmfont"
+type="FontFile"
+uid="uid://c0ecc7xrbvt0a"
+path="res://.godot/imported/hld_font.fnt-e3a3589dc236b7a69ada8e015a23d7da.fontdata"
+
+[deps]
+
+source_file="res://assets/Fonts/hld_font.fnt"
+dest_files=["res://.godot/imported/hld_font.fnt-e3a3589dc236b7a69ada8e015a23d7da.fontdata"]
+
+[params]
+
+fallbacks=[]
+compress=true
+scaling_mode=2

@@ -1,0 +1,356 @@
+[gd_scene format=3 uid="uid://yrf7xfqrgtd1"]
+
+[ext_resource type="Script" uid="uid://bcmlpegggibul" path="res://scripts/player.gd" id="1_g2els"]
+[ext_resource type="Texture2D" uid="uid://ysfjcwd3ekj2" path="res://assets/Player/Idle-sheet.png" id="2_ur7pv"]
+[ext_resource type="Texture2D" uid="uid://dk4s3uj23ra7u" path="res://assets/Player/Attack-sheet.png" id="2_y4r1p"]
+[ext_resource type="Texture2D" uid="uid://bjicqmueil27m" path="res://assets/Player/Walk-sheet.png" id="3_y4r1p"]
+[ext_resource type="Script" uid="uid://bokqxh834xqhh" path="res://scripts/state_machine/state_machine.gd" id="4_sm"]
+[ext_resource type="Script" uid="uid://bof1i3hkolwbf" path="res://scripts/player/states/idle.gd" id="5_idle"]
+[ext_resource type="Script" uid="uid://6hpyyvc52vcv" path="res://scripts/player/states/walk.gd" id="6_walk"]
+[ext_resource type="Script" uid="uid://cufcvldk0txha" path="res://scripts/player/states/dash.gd" id="7_dash"]
+[ext_resource type="Script" uid="uid://cr74whvbk050l" path="res://scripts/player/states/attack.gd" id="8_attack"]
+[ext_resource type="Texture2D" uid="uid://do3x86e4sbm37" path="res://assets/Slash/pixel_art_sword_slash_sprites-sheet.png" id="9_slash"]
+[ext_resource type="Script" uid="uid://bk3q0fv8aj53l" path="res://scripts/player/states/heal.gd" id="10_heal"]
+[ext_resource type="Shader" uid="uid://mjv6ge7s3k16" path="res://shaders/player.gdshader" id="11_flash"]
+[ext_resource type="Script" uid="uid://v0pj6favgt70" path="res://scripts/components/health_component.gd" id="12_health"]
+[ext_resource type="Script" uid="uid://71g15ja72qvp" path="res://scripts/components/hurtbox.gd" id="13_hurtbox"]
+[ext_resource type="Script" uid="uid://r1w35ornjv5w" path="res://scripts/components/hitbox.gd" id="14_hitbox"]
+[ext_resource type="Script" uid="uid://bfyg3pnjixbvv" path="res://scripts/player/states/hurt.gd" id="15_hurt"]
+[ext_resource type="Script" uid="uid://b2nv72evjx1u" path="res://scripts/player/states/dead.gd" id="16_dead"]
+[ext_resource type="Script" uid="uid://caixvwi2cblfj" path="res://scripts/player/states/parry.gd" id="17_parry"]
+[ext_resource type="Shader" uid="uid://cbb8f47gwy6o8" path="res://shaders/slash_outline.gdshader" id="18_outline"]
+[ext_resource type="Texture2D" uid="uid://vvywb3saoi57" path="res://assets/Effects/shadow_small.png" id="20_shadow"]
+[ext_resource type="SpriteFrames" uid="uid://5slelplaieaw" path="res://resources/effects/parry_stance.tres" id="21_stance"]
+[ext_resource type="Script" uid="uid://c6n7wld3bxnsu" path="res://scripts/player/states/extract.gd" id="22_extract"]
+[ext_resource type="Texture2D" uid="uid://h7xiq7itctkd" path="res://assets/Player/Throw.png" id="23_throw"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_flash"]
+resource_local_to_scene = true
+shader = ExtResource("11_flash")
+shader_parameter/horn_source = Color(0.435, 0.875, 0.576, 1)
+shader_parameter/horn_color = Color(0.435, 0.875, 0.576, 1)
+shader_parameter/tolerance = 0.08
+shader_parameter/flash = 0.0
+shader_parameter/flash_color = Color(1, 1, 1, 1)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i4ail"]
+atlas = ExtResource("2_y4r1p")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a38lo"]
+atlas = ExtResource("2_y4r1p")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4ni07"]
+atlas = ExtResource("2_y4r1p")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_l71n6"]
+atlas = ExtResource("2_y4r1p")
+region = Rect2(48, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_d2wvv"]
+atlas = ExtResource("2_ur7pv")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3v2ag"]
+atlas = ExtResource("2_ur7pv")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jej6c"]
+atlas = ExtResource("3_y4r1p")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f1ej7"]
+atlas = ExtResource("3_y4r1p")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_oprun"]
+atlas = ExtResource("3_y4r1p")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a8ls1"]
+atlas = ExtResource("3_y4r1p")
+region = Rect2(48, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qfm1y"]
+atlas = ExtResource("3_y4r1p")
+region = Rect2(64, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fulsm"]
+atlas = ExtResource("3_y4r1p")
+region = Rect2(80, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4r5pv"]
+atlas = ExtResource("3_y4r1p")
+region = Rect2(96, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_60mlk"]
+atlas = ExtResource("3_y4r1p")
+region = Rect2(112, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_lnu2h"]
+animations = [{
+"frames": [{
+"duration": 0.5,
+"texture": SubResource("AtlasTexture_i4ail")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a38lo")
+}, {
+"duration": 1.6,
+"texture": SubResource("AtlasTexture_4ni07")
+}, {
+"duration": 1.7,
+"texture": SubResource("AtlasTexture_l71n6")
+}],
+"loop": 0,
+"name": &"attack",
+"speed": 15.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_d2wvv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3v2ag")
+}],
+"loop": 1,
+"name": &"idle",
+"speed": 2.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jej6c")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f1ej7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_oprun")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a8ls1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qfm1y")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fulsm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4r5pv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_60mlk")
+}],
+"loop": 1,
+"name": &"walk",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("23_throw")
+}],
+"loop": true,
+"name": &"extract",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_he1uh"]
+radius = 4.1231055
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hurtbox"]
+radius = 5.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_attack"]
+radius = 8.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_outline"]
+shader = ExtResource("18_outline")
+shader_parameter/fill_color = Color(0, 0, 0, 1)
+shader_parameter/outline_color = Color(1, 1, 1, 1)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_slash0"]
+atlas = ExtResource("9_slash")
+region = Rect2(0, 0, 32, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_slash1"]
+atlas = ExtResource("9_slash")
+region = Rect2(32, 0, 32, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_slash2"]
+atlas = ExtResource("9_slash")
+region = Rect2(64, 0, 32, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_slash3"]
+atlas = ExtResource("9_slash")
+region = Rect2(0, 23, 32, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_slash4"]
+atlas = ExtResource("9_slash")
+region = Rect2(32, 23, 32, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_slash5"]
+atlas = ExtResource("9_slash")
+region = Rect2(64, 23, 32, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_slash6"]
+atlas = ExtResource("9_slash")
+region = Rect2(0, 46, 32, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_slash7"]
+atlas = ExtResource("9_slash")
+region = Rect2(32, 46, 32, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_slash8"]
+atlas = ExtResource("9_slash")
+region = Rect2(64, 46, 32, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_slash"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_slash0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_slash1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_slash2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_slash3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_slash4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_slash5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_slash6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_slash7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_slash8")
+}],
+"loop": 0,
+"name": &"slash",
+"speed": 20.0
+}]
+
+[sub_resource type="Curve" id="Curve_shrink"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[node name="Player" type="CharacterBody2D" unique_id=1306043977 groups=["player"]]
+collision_layer = 2
+motion_mode = 1
+script = ExtResource("1_g2els")
+
+[node name="Shadow" type="Sprite2D" parent="." unique_id=998451132]
+modulate = Color(1, 1, 1, 0.35)
+position = Vector2(0, -1)
+texture = ExtResource("20_shadow")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=500357896]
+material = SubResource("ShaderMaterial_flash")
+position = Vector2(0, -9)
+sprite_frames = SubResource("SpriteFrames_lnu2h")
+animation = &"idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=33773398]
+position = Vector2(0, -5)
+shape = SubResource("CircleShape2D_he1uh")
+
+[node name="StateMachine" type="Node" parent="." unique_id=481562843 node_paths=PackedStringArray("initial_state")]
+script = ExtResource("4_sm")
+initial_state = NodePath("Idle")
+
+[node name="Idle" type="Node" parent="StateMachine" unique_id=1429385286]
+script = ExtResource("5_idle")
+
+[node name="Walk" type="Node" parent="StateMachine" unique_id=1919751717]
+script = ExtResource("6_walk")
+
+[node name="Dash" type="Node" parent="StateMachine" unique_id=1930880005]
+script = ExtResource("7_dash")
+
+[node name="Attack" type="Node" parent="StateMachine" unique_id=1696389013]
+script = ExtResource("8_attack")
+
+[node name="Parry" type="Node" parent="StateMachine" unique_id=139704952]
+script = ExtResource("17_parry")
+
+[node name="Extract" type="Node" parent="StateMachine" unique_id=714385974]
+script = ExtResource("22_extract")
+
+[node name="Heal" type="Node" parent="StateMachine" unique_id=345466622]
+script = ExtResource("10_heal")
+
+[node name="Hurt" type="Node" parent="StateMachine" unique_id=1840736760]
+script = ExtResource("15_hurt")
+
+[node name="Dead" type="Node" parent="StateMachine" unique_id=422239145]
+script = ExtResource("16_dead")
+
+[node name="HealthComponent" type="Node" parent="." unique_id=1985723552]
+script = ExtResource("12_health")
+max_health = 5
+
+[node name="Hurtbox" type="Area2D" parent="." unique_id=1455268747]
+position = Vector2(0, -5)
+collision_layer = 8
+collision_mask = 0
+monitoring = false
+script = ExtResource("13_hurtbox")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" unique_id=2011908102]
+shape = SubResource("CircleShape2D_hurtbox")
+
+[node name="AttackPivot" type="Node2D" parent="." unique_id=1090232088]
+position = Vector2(0, -5)
+
+[node name="AttackArea" type="Area2D" parent="AttackPivot" unique_id=257528102]
+position = Vector2(10, 0)
+collision_layer = 0
+collision_mask = 16
+monitoring = false
+monitorable = false
+script = ExtResource("14_hitbox")
+knockback_force = 180.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackPivot/AttackArea" unique_id=1289905558]
+shape = SubResource("CircleShape2D_attack")
+
+[node name="SlashEffect" type="AnimatedSprite2D" parent="AttackPivot" unique_id=1614075287]
+visible = false
+material = SubResource("ShaderMaterial_outline")
+position = Vector2(10, 0)
+sprite_frames = SubResource("SpriteFrames_slash")
+animation = &"slash"
+frame = 8
+frame_progress = 1.0
+
+[node name="HealParticles" type="CPUParticles2D" parent="." unique_id=387962911]
+position = Vector2(0, -7)
+emitting = false
+amount = 24
+lifetime = 0.45
+local_coords = true
+emission_shape = 2
+emission_sphere_radius = 14.0
+gravity = Vector2(0, 0)
+radial_accel_min = -140.0
+radial_accel_max = -100.0
+scale_amount_max = 2.0
+scale_amount_curve = SubResource("Curve_shrink")
+
+[node name="ParryStance" type="AnimatedSprite2D" parent="." unique_id=256449063]
+visible = false
+z_index = 1
+position = Vector2(0, -7)
+sprite_frames = ExtResource("21_stance")

@@ -1,0 +1,286 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/enemies/enemy.gd" id="1_enemy"]
+[ext_resource type="Texture2D" path="res://assets/Monsters/Shrinker/shrinker_walk.png" id="2_walk"]
+[ext_resource type="Texture2D" path="res://assets/Monsters/Shrinker/shrinker_attack.png" id="3_attack"]
+[ext_resource type="Texture2D" path="res://assets/Monsters/Shrinker/Shrinker_spawn_teleport.png" id="4_spawn"]
+[ext_resource type="Shader" path="res://shaders/flash.gdshader" id="5_flash"]
+[ext_resource type="Script" path="res://scripts/components/health_component.gd" id="6_health"]
+[ext_resource type="Script" path="res://scripts/components/hurtbox.gd" id="7_hurtbox"]
+[ext_resource type="Script" path="res://scripts/components/hitbox.gd" id="8_hitbox"]
+[ext_resource type="Script" path="res://scripts/components/health_bar.gd" id="9_bar"]
+[ext_resource type="Script" path="res://scripts/state_machine/state_machine.gd" id="10_sm"]
+[ext_resource type="Script" path="res://scripts/enemies/states/spawn.gd" id="11_spawn"]
+[ext_resource type="Script" path="res://scripts/enemies/states/chase.gd" id="12_chase"]
+[ext_resource type="Script" path="res://scripts/enemies/states/attack.gd" id="13_attack"]
+[ext_resource type="Script" path="res://scripts/enemies/states/hurt.gd" id="14_hurt"]
+[ext_resource type="Script" path="res://scripts/enemies/states/death.gd" id="15_death"]
+[ext_resource type="Script" path="res://scripts/enemies/states/shoot.gd" id="16_shoot"]
+[ext_resource type="PackedScene" uid="uid://biecgn63uuu0e" path="res://scenes/projectile.tscn" id="17_projectile"]
+[ext_resource type="Texture2D" path="res://assets/Effects/shadow.png" id="18_shadow"]
+[ext_resource type="SpriteFrames" path="res://resources/effects/extract_mark.tres" id="19_mark"]
+[ext_resource type="Script" path="res://scripts/enemies/states/extracted.gd" id="20_extracted"]
+
+[sub_resource type="AtlasTexture" id="walk_0"]
+atlas = ExtResource("2_walk")
+region = Rect2(0, 0, 99, 135)
+
+[sub_resource type="AtlasTexture" id="walk_1"]
+atlas = ExtResource("2_walk")
+region = Rect2(99, 0, 99, 135)
+
+[sub_resource type="AtlasTexture" id="walk_2"]
+atlas = ExtResource("2_walk")
+region = Rect2(198, 0, 99, 135)
+
+[sub_resource type="AtlasTexture" id="walk_3"]
+atlas = ExtResource("2_walk")
+region = Rect2(297, 0, 99, 135)
+
+[sub_resource type="AtlasTexture" id="walk_4"]
+atlas = ExtResource("2_walk")
+region = Rect2(396, 0, 99, 135)
+
+[sub_resource type="AtlasTexture" id="attack_0"]
+atlas = ExtResource("3_attack")
+region = Rect2(0, 0, 99, 135)
+
+[sub_resource type="AtlasTexture" id="attack_1"]
+atlas = ExtResource("3_attack")
+region = Rect2(99, 0, 99, 135)
+
+[sub_resource type="AtlasTexture" id="attack_2"]
+atlas = ExtResource("3_attack")
+region = Rect2(198, 0, 99, 135)
+
+[sub_resource type="AtlasTexture" id="attack_3"]
+atlas = ExtResource("3_attack")
+region = Rect2(297, 0, 99, 135)
+
+[sub_resource type="AtlasTexture" id="attack_4"]
+atlas = ExtResource("3_attack")
+region = Rect2(396, 0, 99, 135)
+
+[sub_resource type="AtlasTexture" id="attack_5"]
+atlas = ExtResource("3_attack")
+region = Rect2(495, 0, 99, 135)
+
+[sub_resource type="AtlasTexture" id="attack_6"]
+atlas = ExtResource("3_attack")
+region = Rect2(594, 0, 99, 135)
+
+[sub_resource type="AtlasTexture" id="attack_7"]
+atlas = ExtResource("3_attack")
+region = Rect2(693, 0, 99, 135)
+
+[sub_resource type="AtlasTexture" id="attack_8"]
+atlas = ExtResource("3_attack")
+region = Rect2(792, 0, 99, 135)
+
+[sub_resource type="AtlasTexture" id="attack_9"]
+atlas = ExtResource("3_attack")
+region = Rect2(891, 0, 99, 135)
+
+[sub_resource type="AtlasTexture" id="spawn_0"]
+atlas = ExtResource("4_spawn")
+region = Rect2(0, 0, 99, 135)
+
+[sub_resource type="AtlasTexture" id="spawn_1"]
+atlas = ExtResource("4_spawn")
+region = Rect2(99, 0, 99, 135)
+
+[sub_resource type="AtlasTexture" id="spawn_2"]
+atlas = ExtResource("4_spawn")
+region = Rect2(198, 0, 99, 135)
+
+[sub_resource type="AtlasTexture" id="spawn_3"]
+atlas = ExtResource("4_spawn")
+region = Rect2(297, 0, 99, 135)
+
+[sub_resource type="AtlasTexture" id="spawn_4"]
+atlas = ExtResource("4_spawn")
+region = Rect2(396, 0, 99, 135)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_shrinker"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("attack_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("attack_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("attack_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("attack_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("attack_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("attack_5")
+}, {
+"duration": 1.0,
+"texture": SubResource("attack_6")
+}, {
+"duration": 1.0,
+"texture": SubResource("attack_7")
+}, {
+"duration": 1.0,
+"texture": SubResource("attack_8")
+}, {
+"duration": 1.0,
+"texture": SubResource("attack_9")
+}],
+"loop": false,
+"name": &"attack",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("spawn_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("spawn_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("spawn_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("spawn_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("spawn_4")
+}],
+"loop": false,
+"name": &"spawn",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("walk_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("walk_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("walk_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("walk_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("walk_4")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 8.0
+}]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_flash"]
+resource_local_to_scene = true
+shader = ExtResource("5_flash")
+shader_parameter/flash = 0.0
+shader_parameter/flash_color = Color(1, 1, 1, 1)
+
+[sub_resource type="CircleShape2D" id="Shape_body"]
+radius = 7.0
+
+[sub_resource type="CircleShape2D" id="Shape_hurtbox"]
+radius = 9.0
+
+[sub_resource type="CircleShape2D" id="Shape_hitbox"]
+radius = 10.0
+
+[node name="Shrinker" type="CharacterBody2D" groups=["enemies"]]
+collision_layer = 4
+collision_mask = 5
+motion_mode = 1
+script = ExtResource("1_enemy")
+attack_range = 26.0
+projectile_scene = ExtResource("17_projectile")
+bob_amount = 1.5
+
+[node name="Shadow" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.35)
+texture = ExtResource("18_shadow")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+material = SubResource("ShaderMaterial_flash")
+position = Vector2(0, -31)
+scale = Vector2(0.6, 0.6)
+sprite_frames = SubResource("SpriteFrames_shrinker")
+animation = &"spawn"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -8)
+shape = SubResource("Shape_body")
+
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("6_health")
+max_health = 5
+
+[node name="Hurtbox" type="Area2D" parent="."]
+position = Vector2(0, -18)
+collision_layer = 16
+collision_mask = 0
+monitoring = false
+script = ExtResource("7_hurtbox")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource("Shape_hurtbox")
+
+[node name="AttackPivot" type="Node2D" parent="."]
+position = Vector2(0, -18)
+
+[node name="Hitbox" type="Area2D" parent="AttackPivot"]
+position = Vector2(18, 0)
+collision_layer = 0
+collision_mask = 8
+monitoring = false
+monitorable = false
+script = ExtResource("8_hitbox")
+knockback_force = 220.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackPivot/Hitbox"]
+shape = SubResource("Shape_hitbox")
+
+[node name="HealthBar" type="Node2D" parent="." node_paths=PackedStringArray("health")]
+position = Vector2(0, 4)
+z_index = 5
+script = ExtResource("9_bar")
+health = NodePath("../HealthComponent")
+
+[node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_state")]
+script = ExtResource("10_sm")
+initial_state = NodePath("Spawn")
+
+[node name="Spawn" type="Node" parent="StateMachine"]
+script = ExtResource("11_spawn")
+
+[node name="Chase" type="Node" parent="StateMachine"]
+script = ExtResource("12_chase")
+
+[node name="Attack" type="Node" parent="StateMachine"]
+script = ExtResource("13_attack")
+
+[node name="Hurt" type="Node" parent="StateMachine"]
+script = ExtResource("14_hurt")
+
+[node name="Death" type="Node" parent="StateMachine"]
+script = ExtResource("15_death")
+
+[node name="Shoot" type="Node" parent="StateMachine"]
+script = ExtResource("16_shoot")
+
+[node name="Extracted" type="Node" parent="StateMachine"]
+script = ExtResource("20_extracted")
+
+[node name="ExtractMark" type="AnimatedSprite2D" parent="."]
+visible = false
+z_index = 5
+position = Vector2(0, -38)
+sprite_frames = ExtResource("19_mark")
+animation = &"default"

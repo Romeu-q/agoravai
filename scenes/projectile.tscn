@@ -1,0 +1,493 @@
+[gd_scene format=3 uid="uid://biecgn63uuu0e"]
+
+[ext_resource type="Script" uid="uid://dpa646uw5p1f4" path="res://scripts/projectile.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://0n3670r3sb7l" path="res://assets/Projectile/Projectile.png" id="2_fly"]
+[ext_resource type="Texture2D" uid="uid://bfq7j8ppsslld" path="res://assets/Projectile/Projectile_hit.png" id="3_hit"]
+[ext_resource type="Shader" path="res://shaders/flash.gdshader" id="4_flash"]
+
+[sub_resource type="AtlasTexture" id="fly_0"]
+atlas = ExtResource("2_fly")
+region = Rect2(0, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_1"]
+atlas = ExtResource("2_fly")
+region = Rect2(41, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_2"]
+atlas = ExtResource("2_fly")
+region = Rect2(82, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_3"]
+atlas = ExtResource("2_fly")
+region = Rect2(123, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_4"]
+atlas = ExtResource("2_fly")
+region = Rect2(164, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_5"]
+atlas = ExtResource("2_fly")
+region = Rect2(205, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_6"]
+atlas = ExtResource("2_fly")
+region = Rect2(246, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_7"]
+atlas = ExtResource("2_fly")
+region = Rect2(287, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_8"]
+atlas = ExtResource("2_fly")
+region = Rect2(328, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_9"]
+atlas = ExtResource("2_fly")
+region = Rect2(369, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_10"]
+atlas = ExtResource("2_fly")
+region = Rect2(410, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_11"]
+atlas = ExtResource("2_fly")
+region = Rect2(451, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_12"]
+atlas = ExtResource("2_fly")
+region = Rect2(492, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_13"]
+atlas = ExtResource("2_fly")
+region = Rect2(533, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_14"]
+atlas = ExtResource("2_fly")
+region = Rect2(574, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_15"]
+atlas = ExtResource("2_fly")
+region = Rect2(615, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_16"]
+atlas = ExtResource("2_fly")
+region = Rect2(656, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_17"]
+atlas = ExtResource("2_fly")
+region = Rect2(697, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_18"]
+atlas = ExtResource("2_fly")
+region = Rect2(738, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_19"]
+atlas = ExtResource("2_fly")
+region = Rect2(779, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_20"]
+atlas = ExtResource("2_fly")
+region = Rect2(820, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_21"]
+atlas = ExtResource("2_fly")
+region = Rect2(861, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_22"]
+atlas = ExtResource("2_fly")
+region = Rect2(902, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_23"]
+atlas = ExtResource("2_fly")
+region = Rect2(943, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_24"]
+atlas = ExtResource("2_fly")
+region = Rect2(984, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_25"]
+atlas = ExtResource("2_fly")
+region = Rect2(1025, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_26"]
+atlas = ExtResource("2_fly")
+region = Rect2(1066, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_27"]
+atlas = ExtResource("2_fly")
+region = Rect2(1107, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_28"]
+atlas = ExtResource("2_fly")
+region = Rect2(1148, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_29"]
+atlas = ExtResource("2_fly")
+region = Rect2(1189, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_30"]
+atlas = ExtResource("2_fly")
+region = Rect2(1230, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_31"]
+atlas = ExtResource("2_fly")
+region = Rect2(1271, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_32"]
+atlas = ExtResource("2_fly")
+region = Rect2(1312, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_33"]
+atlas = ExtResource("2_fly")
+region = Rect2(1353, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_34"]
+atlas = ExtResource("2_fly")
+region = Rect2(1394, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_35"]
+atlas = ExtResource("2_fly")
+region = Rect2(1435, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_36"]
+atlas = ExtResource("2_fly")
+region = Rect2(1476, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_37"]
+atlas = ExtResource("2_fly")
+region = Rect2(1517, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_38"]
+atlas = ExtResource("2_fly")
+region = Rect2(1558, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_39"]
+atlas = ExtResource("2_fly")
+region = Rect2(1599, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_40"]
+atlas = ExtResource("2_fly")
+region = Rect2(1640, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_41"]
+atlas = ExtResource("2_fly")
+region = Rect2(1681, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_42"]
+atlas = ExtResource("2_fly")
+region = Rect2(1722, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_43"]
+atlas = ExtResource("2_fly")
+region = Rect2(1763, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_44"]
+atlas = ExtResource("2_fly")
+region = Rect2(1804, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_45"]
+atlas = ExtResource("2_fly")
+region = Rect2(1845, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_46"]
+atlas = ExtResource("2_fly")
+region = Rect2(1886, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_47"]
+atlas = ExtResource("2_fly")
+region = Rect2(1927, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_48"]
+atlas = ExtResource("2_fly")
+region = Rect2(1968, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_49"]
+atlas = ExtResource("2_fly")
+region = Rect2(2009, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_50"]
+atlas = ExtResource("2_fly")
+region = Rect2(2050, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_51"]
+atlas = ExtResource("2_fly")
+region = Rect2(2091, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_52"]
+atlas = ExtResource("2_fly")
+region = Rect2(2132, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_53"]
+atlas = ExtResource("2_fly")
+region = Rect2(2173, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_54"]
+atlas = ExtResource("2_fly")
+region = Rect2(2214, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_55"]
+atlas = ExtResource("2_fly")
+region = Rect2(2255, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_56"]
+atlas = ExtResource("2_fly")
+region = Rect2(2296, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_57"]
+atlas = ExtResource("2_fly")
+region = Rect2(2337, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_58"]
+atlas = ExtResource("2_fly")
+region = Rect2(2378, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="fly_59"]
+atlas = ExtResource("2_fly")
+region = Rect2(2419, 0, 41, 36)
+
+[sub_resource type="AtlasTexture" id="hit_0"]
+atlas = ExtResource("3_hit")
+region = Rect2(0, 0, 36, 31)
+
+[sub_resource type="AtlasTexture" id="hit_1"]
+atlas = ExtResource("3_hit")
+region = Rect2(36, 0, 36, 31)
+
+[sub_resource type="AtlasTexture" id="hit_2"]
+atlas = ExtResource("3_hit")
+region = Rect2(72, 0, 36, 31)
+
+[sub_resource type="AtlasTexture" id="hit_3"]
+atlas = ExtResource("3_hit")
+region = Rect2(108, 0, 36, 31)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_proj"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("fly_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_5")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_6")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_7")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_8")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_9")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_10")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_11")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_12")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_13")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_14")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_15")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_16")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_17")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_18")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_19")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_20")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_21")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_22")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_23")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_24")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_25")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_26")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_27")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_28")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_29")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_30")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_31")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_32")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_33")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_34")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_35")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_36")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_37")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_38")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_39")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_40")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_41")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_42")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_43")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_44")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_45")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_46")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_47")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_48")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_49")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_50")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_51")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_52")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_53")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_54")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_55")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_56")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_57")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_58")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly_59")
+}],
+"loop": 1,
+"name": &"fly",
+"speed": 30.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("hit_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("hit_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("hit_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("hit_3")
+}],
+"loop": 0,
+"name": &"hit",
+"speed": 16.0
+}]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_proj"]
+resource_local_to_scene = true
+shader = ExtResource("4_flash")
+shader_parameter/flash = 0.0
+shader_parameter/flash_color = Color(1, 1, 1, 1)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_proj"]
+radius = 3.0
+
+[node name="Projectile" type="Area2D" unique_id=943400168]
+collision_layer = 0
+collision_mask = 17
+monitorable = false
+script = ExtResource("1_script")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1674475249]
+material = SubResource("ShaderMaterial_proj")
+scale = Vector2(0.5, 0.5)
+sprite_frames = SubResource("SpriteFrames_proj")
+animation = &"fly"
+frame_progress = 0.050661463
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=263745121]
+position = Vector2(0, 0)
+shape = SubResource("CircleShape2D_proj")
