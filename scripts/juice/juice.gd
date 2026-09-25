@@ -5,8 +5,15 @@ extends Node
 
 
 const RING := preload("res://resources/effects/ring.tres")
+const NEON_BURST := preload("res://scenes/effects/neon_burst.tscn")
+## Brilho dos efeitos: multiplica a cor para passar de 1.0 ("mais branco que o
+## branco"). Só o que passa de 1.0 ganha o halo do Glow (WorldEnvironment).
+const GLOW := 1.8
 
 var _hitstops := 0
+## Velocidade "normal" do jogo: 1.0, ou menos durante a câmera lenta.
+## O hitstop sempre volta para ela (e não direto para 1.0).
+var _base_time_scale := 1.0
 
 
 ## Congela o jogo por um instante (quase parado). Dá "peso" ao impacto.
@@ -18,11 +25,22 @@ func hitstop(duration := 0.06, time_scale := 0.05) -> void:
 	await get_tree().create_timer(duration, true, false, true).timeout
 	_hitstops -= 1
 	if _hitstops == 0:
-		Engine.time_scale = 1.0
+		Engine.time_scale = _base_time_scale
+
+
+## Câmera lenta até ser desligada (1.0 = volta ao normal).
+## Ex.: slow_motion(0.15) deixa tudo a 15% da velocidade.
+func slow_motion(time_scale: float) -> void:
+	_base_time_scale = time_scale
+	if _hitstops == 0:   # se um hitstop estiver rolando, ele aplica quando acabar
+		Engine.time_scale = time_scale
+	Sound.set_slow_motion(time_scale < 1.0)   # música abafada na câmera lenta
 
 
 ## Treme a câmera atual (se ela tiver o script shake_camera.gd).
 func shake(amount := 0.3) -> void:
+	if not Settings.screen_shake:
+		return   # o jogador desligou nas opções
 	var camera := get_viewport().get_camera_2d()
 	if camera and camera.has_method("add_trauma"):
 		camera.add_trauma(amount)
@@ -44,6 +62,8 @@ func focus(amount: float) -> void:
 
 ## Tremor contínuo enquanto for pedido (0 = para).
 func rumble(amount: float) -> void:
+	if not Settings.screen_shake:
+		amount = 0.0
 	var camera := get_viewport().get_camera_2d()
 	if camera and camera.has_method("set_rumble"):
 		camera.set_rumble(amount)
@@ -86,13 +106,72 @@ func burst(position: Vector2, color := Color.BLACK, amount := 16,
 	particles.finished.connect(particles.queue_free)
 
 
+## Explosão NEON de losangos, quadrados e triângulos pixelados.
+## O visual padrão está em scenes/effects/neon_burst.tscn (Process Material >
+## Shader Parameters). Com `direction`, os pedaços saem num cone de `spread` graus.
+## `settings` troca parâmetros do shader SÓ nesta explosão, pelo nome. Ex.:
+##   Juice.neon_burst(pos, 10, Vector2.ZERO, 180.0, {"speed_max": 80.0,
+##       "weights_special": Vector3.ZERO})   # lenta e só preto/verde/branco
+func neon_burst(position: Vector2, amount := 24, direction := Vector2.ZERO,
+		spread := 180.0, settings := {}) -> GPUParticles2D:
+	var particles := _make_neon(amount, direction, spread, settings)
+	get_tree().current_scene.add_child(particles)
+	particles.global_position = position
+	_fire(particles)
+	return particles
+
+
+## Mesma explosão neon, mas DENTRO da HUD (ou de qualquer nó de interface).
+## - `parent`: o nó da HUD onde ela aparece; `position` é na coordenada dele.
+## - `ui_scale`: amplia a explosão (a HUD não tem o zoom da câmera).
+## Usa Local Coords: as partículas herdam a posição e a escala do `parent`,
+## em vez de ficarem soltas no mundo do jogo.
+func neon_burst_ui(parent: Node, position: Vector2, amount := 10, direction := Vector2.ZERO,
+		spread := 180.0, settings := {}, ui_scale := 1.0) -> GPUParticles2D:
+	# Na HUD elas voam mais devagar: o espaço é pequeno.
+	var particles := _make_neon(amount, direction, spread,
+		{"speed_min": 15.0, "speed_max": 55.0}.merged(settings, true))
+	particles.local_coords = true
+	particles.scale = Vector2.ONE * ui_scale
+	particles.position = position
+	parent.add_child(particles)
+	_fire(particles)
+	return particles
+
+
+## Cria o nó de partículas neon já configurado (sem colocar na cena).
+func _make_neon(amount: int, direction: Vector2, spread: float,
+		settings: Dictionary) -> GPUParticles2D:
+	var particles: GPUParticles2D = NEON_BURST.instantiate()
+	particles.amount = amount
+	# O shader usa o ângulo do nó como direção central.
+	particles.rotation = direction.angle()
+	if direction != Vector2.ZERO:
+		settings = settings.merged({"spread": spread})
+	if not settings.is_empty():
+		# Cópia do material só desta explosão, para não mudar todas as outras.
+		var material := particles.process_material.duplicate() as ShaderMaterial
+		for key in settings:
+			material.set_shader_parameter(key, settings[key])
+		particles.process_material = material
+	return particles
+
+
+## Dispara e apaga o nó quando todas as partículas somem.
+func _fire(particles: GPUParticles2D) -> void:
+	particles.emitting = true
+	particles.finished.connect(particles.queue_free)
+
+
 ## Toca um efeito (SpriteFrames com a animação "default") uma vez e apaga.
-## Os efeitos em assets/Effects são BRANCOS: `color` pinta eles (via modulate).
+## `color` multiplica o sheet (via modulate): nos sheets já coloridos (parry,
+## extração) use BRANCO; no ring.png, que é branco, `color` dá a cor.
 func play_effect(frames: SpriteFrames, position: Vector2, color := Color.WHITE,
 		effect_scale := 1.0, duration := 0.0) -> AnimatedSprite2D:
 	var effect := AnimatedSprite2D.new()
 	effect.sprite_frames = frames
-	effect.modulate = color
+	# Multiplica só o RGB (o alpha fica igual) para o efeito brilhar.
+	effect.modulate = Color(color.r * GLOW, color.g * GLOW, color.b * GLOW, color.a)
 	effect.scale = Vector2.ONE * effect_scale
 	effect.z_index = 10
 	get_tree().current_scene.add_child(effect)

@@ -82,3 +82,4 @@ func _swing(continue_combo: bool) -> void:
 
 	# Juice: o golpe de volta sacode um pouquinho mais.
 	Juice.shake(0.08 if player.slash_flipped else 0.04)
+	Sound.play("slash")

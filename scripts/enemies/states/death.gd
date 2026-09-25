@@ -4,6 +4,7 @@ extends EnemyState
 
 
 func enter() -> void:
+	enemy.release_attack()
 	enemy.hurtbox.invincible = true
 	enemy.hitbox.deactivate()
 	# Tira o corpo das colisões para não bloquear os outros monstros.
@@ -12,6 +13,7 @@ func enter() -> void:
 	enemy.velocity = enemy.knockback
 	enemy.sprite.play_backwards("spawn")
 	Juice.burst(enemy.hurtbox.global_position, Color.BLACK, 20)
+	Sound.play("enemy_death", 0.15)
 	Juice.shake(0.3)
 
 

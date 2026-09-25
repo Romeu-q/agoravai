@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bmm45wclkhad0"
-path="res://.godot/imported/tilemap_packed.png-4e6c2e83703294608e584b3d26063b40.ctex"
+uid="uid://uorsva72ylai"
+path="res://.godot/imported/laser_beam.png-5aebc69ef182bcd671d442d3c30587f4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Kenney/tilemap_packed.png"
-dest_files=["res://.godot/imported/tilemap_packed.png-4e6c2e83703294608e584b3d26063b40.ctex"]
+source_file="res://assets/Effects/laser_beam.png"
+dest_files=["res://.godot/imported/laser_beam.png-5aebc69ef182bcd671d442d3c30587f4.ctex"]
 
 [params]
 

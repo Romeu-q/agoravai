@@ -6,6 +6,7 @@ var time_left := 0.0
 
 
 func enter() -> void:
+	enemy.release_attack()   # apanhou: desiste do ataque e libera a vaga
 	enemy.velocity = enemy.knockback
 	enemy.sprite.play("walk")
 	enemy.sprite.pause()

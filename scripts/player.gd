@@ -40,6 +40,13 @@ signal soul_changed(soul: int, max_soul: int)
 ## Depois de um parry certo, a guarda fica ativa pelo menos este tempo
 ## (é o que permite rebater vários projéteis com 1 parry).
 @export var parry_extend_window := 0.3
+## Parry em PROJÉTIL: o tempo fica lento e você mira com o mouse para onde devolver.
+## Velocidade do jogo durante a mira (0.15 = 15%).
+@export var parry_slow_scale := 0.15
+## Tempo máximo de mira (segundos REAIS). Depois disso, o projétil EXPLODE em você.
+@export var parry_aim_time := 2.5
+## Distância (px) do jogador em que o projétil fica "na mão" durante a mira.
+@export var parry_hold_distance := 14.0
 
 @export_group("Extract")
 ## Inimigos com 1 de vida podem ser "extraídos" (como a ult do Viego / Bel'Veth).
@@ -75,6 +82,8 @@ var soul := 0
 ## Combo do slash: o segundo golpe vai no sentido contrário.
 var slash_flipped := false
 var combo_time_left := 0.0
+## Projéteis pegos no parry, esperando a mira (estado ParryThrow).
+var caught_projectiles: Array[Projectile] = []
 
 # Duas fontes de invencibilidade: o dash e o "tempo de graça" após tomar dano.
 var _dashing := false
@@ -91,6 +100,8 @@ var extract_target: Enemy
 @onready var slash_effect: AnimatedSprite2D = $AttackPivot/SlashEffect
 @onready var heal_particles: CPUParticles2D = $HealParticles
 @onready var parry_stance: AnimatedSprite2D = $ParryStance
+@onready var neon_trail: GPUParticles2D = $NeonTrail
+@onready var aim_line: Line2D = $AimLine
 @onready var state_machine: StateMachine = $StateMachine
 
 
@@ -98,8 +109,6 @@ var extract_target: Enemy
 ## Se você aperta ataque no fim de um dash, o ataque sai assim que o dash acaba,
 ## em vez de o aperto ser perdido. É isso que deixa o controle "macio".
 const BUFFER_TIME := 0.15
-const TRAIL_TEXTURE := preload("res://assets/Effects/dash_particle.png")
-const TRAIL_INTERVAL := 0.02
 const BUFFERED_ACTIONS: Array[StringName] = [&"dash", &"attack", &"parry", &"heal", &"extract"]
 
 var _buffer := {}   # ação -> tempo restante
@@ -116,9 +125,17 @@ func _physics_process(delta: float) -> void:
 			_buffer[action] = BUFFER_TIME
 	if combo_time_left > 0.0:
 		combo_time_left -= delta
+	# O rastro sai de onde o sprite está (na extração ele flutua acima do chão).
+	neon_trail.position = sprite.position
 
 
 ## Usa o aperto guardado (se houver) e apaga, para não disparar duas vezes.
+## Esquece todos os apertos guardados. Usado quando um estado novo NÃO deve
+## reagir a cliques feitos antes dele começar (ex.: a mira do parry).
+func clear_input_buffer() -> void:
+	_buffer.clear()
+
+
 func _consume(action: StringName) -> bool:
 	if _buffer.has(action):
 		_buffer.erase(action)
@@ -135,7 +152,6 @@ func _ready() -> void:
 func _apply_horn_color() -> void:
 	(sprite.material as ShaderMaterial).set_shader_parameter("horn_color", horn_color)
 	(slash_effect.material as ShaderMaterial).set_shader_parameter("fill_color", horn_color)
-	parry_stance.modulate = horn_color
 
 
 # --- Input -------------------------------------------------------------------
@@ -222,22 +238,11 @@ func set_glow(amount: float) -> void:
 	(sprite.material as ShaderMaterial).set_shader_parameter("flash", amount)
 
 
-## Solta um pedaço do rastro (dash, salto da extração), girado para `direction`.
-## É um Sprite2D comum: controlamos rotação, tamanho e fade um por um.
-func spawn_trail(direction: Vector2) -> void:
-	var piece := Sprite2D.new()
-	piece.texture = TRAIL_TEXTURE
-	# O desenho aponta para baixo-direita (45°): descontamos para alinhar com a direção.
-	piece.rotation = direction.angle() - deg_to_rad(45.0)
-	piece.scale = Vector2.ONE * randf_range(0.6, 0.9)
-	# Adicionado na cena (não no Player), senão o rastro andaria junto com ele.
-	get_parent().add_child(piece)
-	piece.global_position = sprite.global_position + Vector2(randf_range(-3, 3), randf_range(-3, 3))
-
-	var tween := piece.create_tween().set_parallel()
-	tween.tween_property(piece, "scale", Vector2.ZERO, 0.3)
-	tween.tween_property(piece, "modulate:a", 0.0, 0.3)
-	tween.chain().tween_callback(piece.queue_free)
+## Liga/desliga o rastro neon (dash, salto da extração).
+## As partículas ficam no MUNDO (local_coords desligado), então elas ficam
+## para trás enquanto o jogador anda: isso é o rastro.
+func set_trail(active: bool) -> void:
+	neon_trail.emitting = active
 
 
 func set_dashing(value: bool) -> void:
@@ -315,6 +320,7 @@ func _on_attack_landed(_target: Hurtbox) -> void:
 func _on_hurt(hitbox: Hitbox) -> void:
 	knockback = hitbox.get_knockback(global_position)
 	health.damage(hitbox.damage)
+	Sound.play("hurt")
 
 	# O jogador tomando dano merece MAIS juice que um inimigo: tem que ser sentido.
 	Juice.flash(sprite, 0.2)

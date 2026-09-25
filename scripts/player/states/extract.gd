@@ -37,12 +37,15 @@ func enter() -> void:
 
 	# O inimigo congela JÁ (antes do jogador chegar), para o salto não errar.
 	target.start_extraction()
+	player.set_trail(true)
 	Juice.hitstop(0.1, 0.05)
 	Juice.punch(0.08)
+	Sound.play("extract_leap")
 
 
 func exit() -> void:
 	player.set_extracting(false)
+	player.set_trail(false)
 	player.heal_particles.emitting = false
 	player.heal_particles.position.y = _particles_base_y
 	player.set_glow(0.0)
@@ -73,7 +76,6 @@ func _leap(delta: float) -> void:
 	else:
 		player.velocity = to_target.normalized() * player.extract_leap_speed
 		player.move_and_slide()
-		player.spawn_trail(to_target.normalized())
 
 	time_left -= delta
 	if player.global_position.distance_to(target.global_position) < 2.0 or time_left <= 0.0:
@@ -82,12 +84,15 @@ func _leap(delta: float) -> void:
 
 func _start_absorb() -> void:
 	phase = Phase.ABSORB
+	player.set_trail(false)
 	time_left = player.extract_absorb_time
 	player.velocity = Vector2.ZERO
 	player.heal_particles.position.y = _particles_base_y - FLOAT_HEIGHT
 	player.heal_particles.emitting = true
 	target.extract(player)
-	Juice.play_effect(EXTRACT_BURST, target.hurtbox.global_position, player.horn_color,
+	Sound.play("extract_absorb", 0.0)
+	# Sheet já colorido (neon): modulate branco para manter as cores originais.
+	Juice.play_effect(EXTRACT_BURST, target.hurtbox.global_position, Color.WHITE,
 		1.0, player.extract_absorb_time)
 	Juice.shake(0.4)
 	Juice.punch(0.15)
@@ -107,30 +112,16 @@ func _absorb(delta: float) -> void:
 
 
 ## Explosão em círculo: dano + knockback em todos os monstros em volta.
-## Reaproveita o componente Hitbox, criado por código só por um instante.
 func _explode() -> void:
 	var center := player.hurtbox.global_position
-
-	var blast := Hitbox.new()
-	blast.damage = player.extract_blast_damage
-	blast.knockback_force = player.extract_blast_knockback
-	blast.collision_layer = 0
-	blast.collision_mask = 16   # enemy_hurtbox
-	blast.monitorable = false
-	var shape := CollisionShape2D.new()
-	var circle := CircleShape2D.new()
-	circle.radius = player.extract_blast_radius
-	shape.shape = circle
-	blast.add_child(shape)
-	player.get_parent().add_child(blast)
-	blast.global_position = center
-	# Sem dono, o knockback sai do centro da Hitbox: empurra todo mundo para fora.
-	get_tree().create_timer(0.1).timeout.connect(blast.queue_free)
+	Hitbox.spawn_blast(player.get_parent(), center, player.extract_blast_radius,
+		player.extract_blast_damage, player.extract_blast_knockback, 16)   # 16 = enemy_hurtbox
 
 	Juice.flash(player.sprite, 0.3)
+	Sound.play("extract_blast")
 	Juice.ring(center, player.horn_color, player.extract_blast_radius, 0.3)
 	Juice.ring(center, Color.WHITE, player.extract_blast_radius * 0.6, 0.2)
-	Juice.burst(center, player.horn_color, 30, Vector2.ZERO, 180.0, 2.0, 180.0)
+	Juice.neon_burst(center, 22)
 	Juice.hitstop(0.08)
 	Juice.shake(0.45)
 	Juice.punch(0.1)

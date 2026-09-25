@@ -1,0 +1,89 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/pause_menu.gd" id="1_pause"]
+[ext_resource type="Script" path="res://scripts/ui/neon_button.gd" id="2_button"]
+[ext_resource type="FontFile" path="res://assets/Fonts/title_font.fnt" id="3_title_font"]
+[ext_resource type="PackedScene" path="res://scenes/ui/options_panel.tscn" id="4_options"]
+
+[node name="PauseMenu" type="CanvasLayer"]
+process_mode = 3
+layer = 20
+script = ExtResource("1_pause")
+
+[node name="Root" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim" type="ColorRect" parent="Root"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.02, 0.05, 0.06, 0.8)
+
+[node name="Title" type="Label" parent="Root"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 110.0
+offset_bottom = 170.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.75, 0.96, 0.88, 1)
+theme_override_fonts/font = ExtResource("3_title_font")
+theme_override_font_sizes/font_size = 48
+text = "PAUSADO"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Main" type="VBoxContainer" parent="Root"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -250.0
+offset_top = 230.0
+offset_right = 250.0
+offset_bottom = 380.0
+grow_horizontal = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="Resume" type="Button" parent="Root/Main"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "CONTINUAR"
+script = ExtResource("2_button")
+
+[node name="Options" type="Button" parent="Root/Main"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "OPCOES"
+script = ExtResource("2_button")
+
+[node name="Menu" type="Button" parent="Root/Main"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "MENU PRINCIPAL"
+script = ExtResource("2_button")
+
+[node name="Options" parent="Root" instance=ExtResource("4_options")]
+visible = false
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -300.0
+offset_top = 210.0
+offset_right = 300.0
+offset_bottom = 435.0
+grow_horizontal = 2

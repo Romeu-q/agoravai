@@ -1,0 +1,345 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/main_menu.gd" id="1_menu"]
+[ext_resource type="Script" path="res://scripts/ui/neon_button.gd" id="2_button"]
+[ext_resource type="FontFile" path="res://assets/Fonts/title_font.fnt" id="3_title_font"]
+[ext_resource type="Texture2D" path="res://assets/Effects/floor_pattern.png" id="4_pattern"]
+[ext_resource type="Shader" path="res://shaders/vignette.gdshader" id="8_vignette"]
+[ext_resource type="PackedScene" path="res://scenes/effects/neon_burst.tscn" id="9_neon"]
+[ext_resource type="Shader" path="res://shaders/neon_particles.gdshader" id="10_neon_shader"]
+[ext_resource type="Script" path="res://scripts/cursor.gd" id="11_cursor"]
+[ext_resource type="PackedScene" path="res://scenes/ui/options_panel.tscn" id="12_options"]
+
+[sub_resource type="Gradient" id="Gradient_bg"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(0.09, 0.21, 0.22, 1, 0.02, 0.05, 0.06, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_bg"]
+gradient = SubResource("Gradient_bg")
+width = 256
+height = 256
+fill = 1
+fill_from = Vector2(0.5, 0.3)
+fill_to = Vector2(1.1, 1.05)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_embers"]
+shader = ExtResource("10_neon_shader")
+shader_parameter/weights_main = Vector3(0.5, 1.5, 1)
+shader_parameter/weights_special = Vector3(0.4, 1, 0.6)
+shader_parameter/white_time = 0.0
+shader_parameter/energy = 1.6
+shader_parameter/size_max = 1
+shader_parameter/pop_time = 0.0
+shader_parameter/spread = 25.0
+shader_parameter/direction_snap = 0.0
+shader_parameter/speed_min = 8.0
+shader_parameter/speed_max = 30.0
+shader_parameter/damping = 0.0
+shader_parameter/emission_radius = 160.0
+shader_parameter/rotate_interval = 0.35
+shader_parameter/life_randomness = 0.5
+shader_parameter/blink_portion = 0.25
+shader_parameter/blink_interval = 0.06
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vignette"]
+shader = ExtResource("8_vignette")
+
+[sub_resource type="Environment" id="Environment_glow"]
+background_mode = 3
+glow_enabled = true
+glow_levels/1 = 1.0
+glow_levels/2 = 1.0
+glow_levels/3 = 0.5
+glow_levels/5 = 0.0
+glow_intensity = 0.8
+glow_blend_mode = 0
+glow_hdr_threshold = 1.0
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_menu")
+
+[node name="Background" type="TextureRect" parent="."]
+texture_filter = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_bg")
+expand_mode = 1
+
+[node name="FloorPattern" type="TextureRect" parent="."]
+modulate = Color(0.75, 0.96, 0.88, 0.07)
+texture_repeat = 2
+layout_mode = 0
+offset_right = 384.0
+offset_bottom = 216.0
+mouse_filter = 2
+texture = ExtResource("4_pattern")
+stretch_mode = 1
+
+[node name="EmberAnchor" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="Embers" parent="EmberAnchor" instance=ExtResource("9_neon")]
+z_index = 0
+position = Vector2(0, 20)
+rotation = -1.5708
+scale = Vector2(3, 3)
+emitting = true
+amount = 140
+lifetime = 5.0
+one_shot = false
+explosiveness = 0.0
+local_coords = true
+visibility_rect = Rect2(-300, -300, 600, 600)
+process_material = SubResource("ShaderMaterial_embers")
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 48.0
+offset_bottom = 160.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.75, 0.96, 0.88, 1)
+theme_override_fonts/font = ExtResource("3_title_font")
+theme_override_font_sizes/font_size = 96
+text = "SEM NOME"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LineLeft" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -330.0
+offset_top = 191.0
+offset_right = -140.0
+offset_bottom = 193.0
+pivot_offset = Vector2(190, 1)
+mouse_filter = 2
+color = Color(0.3, 1.4, 0.1, 1)
+
+[node name="LineRight" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 140.0
+offset_top = 191.0
+offset_right = 330.0
+offset_bottom = 193.0
+pivot_offset = Vector2(0, 1)
+mouse_filter = 2
+color = Color(0.3, 1.4, 0.1, 1)
+
+[node name="Subtitle" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 180.0
+offset_bottom = 204.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0, 1.4, 1.5, 1)
+theme_override_font_sizes/font_size = 24
+text = "GAMMA TEST"
+horizontal_alignment = 1
+
+[node name="Panels" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Main" type="VBoxContainer" parent="Panels"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -250.0
+offset_top = 240.0
+offset_right = 250.0
+offset_bottom = 420.0
+grow_horizontal = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="Play" type="Button" parent="Panels/Main"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "JOGAR"
+script = ExtResource("2_button")
+
+[node name="Options" type="Button" parent="Panels/Main"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "OPCOES"
+script = ExtResource("2_button")
+
+[node name="Controls" type="Button" parent="Panels/Main"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "CONTROLES"
+script = ExtResource("2_button")
+
+[node name="Quit" type="Button" parent="Panels/Main"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "SAIR"
+script = ExtResource("2_button")
+
+[node name="Options" parent="Panels" instance=ExtResource("12_options")]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -300.0
+offset_top = 225.0
+offset_right = 300.0
+offset_bottom = 450.0
+grow_horizontal = 2
+
+[node name="Controls" type="VBoxContainer" parent="Panels"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -350.0
+offset_top = 222.0
+offset_right = 350.0
+offset_bottom = 450.0
+grow_horizontal = 2
+theme_override_constants/separation = 6
+alignment = 1
+
+[node name="Move" type="Label" parent="Panels/Controls"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.96, 0.88, 0.8)
+theme_override_font_sizes/font_size = 16
+text = "WASD - MOVER"
+horizontal_alignment = 1
+
+[node name="Aim" type="Label" parent="Panels/Controls"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.96, 0.88, 0.8)
+theme_override_font_sizes/font_size = 16
+text = "MOUSE - MIRAR"
+horizontal_alignment = 1
+
+[node name="Attack" type="Label" parent="Panels/Controls"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.96, 0.88, 0.8)
+theme_override_font_sizes/font_size = 16
+text = "CLIQUE ESQUERDO - ATACAR"
+horizontal_alignment = 1
+
+[node name="Dash" type="Label" parent="Panels/Controls"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.96, 0.88, 0.8)
+theme_override_font_sizes/font_size = 16
+text = "ESPACO - DASH"
+horizontal_alignment = 1
+
+[node name="Parry" type="Label" parent="Panels/Controls"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.96, 0.88, 0.8)
+theme_override_font_sizes/font_size = 16
+text = "CLIQUE DIREITO - PARRY"
+horizontal_alignment = 1
+
+[node name="Throw" type="Label" parent="Panels/Controls"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.94, 1, 0.8)
+theme_override_font_sizes/font_size = 16
+text = "PARRY NUM TIRO: SEGURE, MIRE E SOLTE"
+horizontal_alignment = 1
+
+[node name="Heal" type="Label" parent="Panels/Controls"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.96, 0.88, 0.8)
+theme_override_font_sizes/font_size = 16
+text = "F SEGURANDO - CURAR COM ALMA"
+horizontal_alignment = 1
+
+[node name="Extract" type="Label" parent="Panels/Controls"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.96, 0.88, 0.8)
+theme_override_font_sizes/font_size = 16
+text = "E - EXTRAIR INIMIGO COM 1 DE VIDA"
+horizontal_alignment = 1
+
+[node name="Back" type="Button" parent="Panels/Controls"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "VOLTAR"
+script = ExtResource("2_button")
+
+[node name="Footer" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -300.0
+offset_top = -36.0
+offset_right = -16.0
+offset_bottom = -12.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.75, 0.96, 0.88, 0.4)
+theme_override_font_sizes/font_size = 16
+text = "V0.1 - GAMMA TEST"
+horizontal_alignment = 2
+
+[node name="Vignette" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_vignette")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Fade" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.02, 0.05, 0.06, 1)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_glow")
+
+[node name="Cursor" type="Node" parent="."]
+script = ExtResource("11_cursor")

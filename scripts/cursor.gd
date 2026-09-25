@@ -1,13 +1,15 @@
 extends Node
-## Troca o cursor do mouse pela imagem assets/Cursor/Cursor.png.
+## Troca o cursor do mouse por uma mira no estilo Drifter (assets/Cursor/cursor_drifter.png).
+## O cursor antigo (Cursor.png) continua na pasta: é só trocar o caminho abaixo.
 
 
-const CURSOR_TEXTURE := preload("res://assets/Cursor/Cursor.png")
+const CURSOR_TEXTURE := preload("res://assets/Cursor/cursor_drifter.png")
 
-## A imagem tem 16x16 pixels: pequena demais numa tela grande, então ampliamos.
+## A imagem tem 15x15 pixels: pequena demais numa tela grande, então ampliamos.
 @export var cursor_scale := 3
 ## Pixel da imagem (antes de ampliar) que marca a "ponta" do cursor.
-@export var hotspot := Vector2(1, 1)
+## Numa mira, a ponta é o CENTRO: (7, 7) numa imagem de 15x15.
+@export var hotspot := Vector2(7, 7)
 
 
 func _ready() -> void:

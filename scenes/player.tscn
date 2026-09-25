@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://bof1i3hkolwbf" path="res://scripts/player/states/idle.gd" id="5_idle"]
 [ext_resource type="Script" uid="uid://6hpyyvc52vcv" path="res://scripts/player/states/walk.gd" id="6_walk"]
 [ext_resource type="Script" uid="uid://cufcvldk0txha" path="res://scripts/player/states/dash.gd" id="7_dash"]
+[ext_resource type="Texture2D" uid="uid://gntxd3prm00o" path="res://assets/Player/Parrystance.png" id="7_pf23h"]
 [ext_resource type="Script" uid="uid://cr74whvbk050l" path="res://scripts/player/states/attack.gd" id="8_attack"]
 [ext_resource type="Texture2D" uid="uid://do3x86e4sbm37" path="res://assets/Slash/pixel_art_sword_slash_sprites-sheet.png" id="9_slash"]
 [ext_resource type="Script" uid="uid://bk3q0fv8aj53l" path="res://scripts/player/states/heal.gd" id="10_heal"]
@@ -23,6 +24,11 @@
 [ext_resource type="SpriteFrames" uid="uid://5slelplaieaw" path="res://resources/effects/parry_stance.tres" id="21_stance"]
 [ext_resource type="Script" uid="uid://c6n7wld3bxnsu" path="res://scripts/player/states/extract.gd" id="22_extract"]
 [ext_resource type="Texture2D" uid="uid://h7xiq7itctkd" path="res://assets/Player/Throw.png" id="23_throw"]
+[ext_resource type="PackedScene" uid="uid://nryj4hfngj1n" path="res://scenes/effects/neon_burst.tscn" id="24_neon"]
+[ext_resource type="Shader" uid="uid://dmri4x8k8a3k" path="res://shaders/neon_particles.gdshader" id="25_neon_shader"]
+[ext_resource type="Script" uid="uid://dit2o2y5vlfhs" path="res://scripts/player/states/parry_throw.gd" id="26_parry_throw"]
+[ext_resource type="Texture2D" uid="uid://jgn4n0x5bmcl" path="res://assets/Effects/aim_dots.png" id="27_aim_dots"]
+[ext_resource type="Script" path="res://scripts/player/states/arrive.gd" id="28_arrive"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_flash"]
 resource_local_to_scene = true
@@ -56,6 +62,22 @@ region = Rect2(0, 0, 16, 16)
 [sub_resource type="AtlasTexture" id="AtlasTexture_3v2ag"]
 atlas = ExtResource("2_ur7pv")
 region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dt7fs"]
+atlas = ExtResource("7_pf23h")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wqfne"]
+atlas = ExtResource("7_pf23h")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wnwbv"]
+atlas = ExtResource("7_pf23h")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gl8cc"]
+atlas = ExtResource("7_pf23h")
+region = Rect2(48, 0, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_jej6c"]
 atlas = ExtResource("3_y4r1p")
@@ -110,6 +132,14 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": ExtResource("23_throw")
+}],
+"loop": 1,
+"name": &"extract",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_d2wvv")
 }, {
 "duration": 1.0,
@@ -118,6 +148,23 @@ animations = [{
 "loop": 1,
 "name": &"idle",
 "speed": 2.0
+}, {
+"frames": [{
+"duration": 0.7,
+"texture": SubResource("AtlasTexture_dt7fs")
+}, {
+"duration": 0.7,
+"texture": SubResource("AtlasTexture_wqfne")
+}, {
+"duration": 0.7,
+"texture": SubResource("AtlasTexture_wnwbv")
+}, {
+"duration": 3.0,
+"texture": SubResource("AtlasTexture_gl8cc")
+}],
+"loop": 1,
+"name": &"parry",
+"speed": 12.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -147,14 +194,6 @@ animations = [{
 "loop": 1,
 "name": &"walk",
 "speed": 10.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("23_throw")
-}],
-"loop": true,
-"name": &"extract",
-"speed": 5.0
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_he1uh"]
@@ -246,6 +285,34 @@ animations = [{
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 2
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_trail"]
+shader = ExtResource("25_neon_shader")
+shader_parameter/color_black = Color(0, 0, 0, 1)
+shader_parameter/color_green = Color(0.224, 1, 0.078, 1)
+shader_parameter/color_white = Color(1, 1, 1, 1)
+shader_parameter/color_pink = Color(1, 0.039, 0.549, 1)
+shader_parameter/color_cyan = Color(0, 0.941, 1, 1)
+shader_parameter/color_purple = Color(0.69, 0.149, 1, 1)
+shader_parameter/weights_main = Vector3(1.5, 1.5, 0.7)
+shader_parameter/weights_special = Vector3(0, 0, 0)
+shader_parameter/white_time = 0.0
+shader_parameter/color_cycle = 0.0
+shader_parameter/energy = 1.8
+shader_parameter/shape_weights = Vector3(1, 1, 1)
+shader_parameter/size_min = 1
+shader_parameter/size_max = 1
+shader_parameter/pop_time = 0.0
+shader_parameter/spread = 180.0
+shader_parameter/direction_snap = 45.0
+shader_parameter/speed_min = 4.0
+shader_parameter/speed_max = 20.0
+shader_parameter/damping = 7.0
+shader_parameter/emission_radius = 4.0
+shader_parameter/rotate_interval = 0.1
+shader_parameter/life_randomness = 0.3
+shader_parameter/blink_portion = 0.3
+shader_parameter/blink_interval = 0.04
+
 [node name="Player" type="CharacterBody2D" unique_id=1306043977 groups=["player"]]
 collision_layer = 2
 motion_mode = 1
@@ -260,7 +327,8 @@ texture = ExtResource("20_shadow")
 material = SubResource("ShaderMaterial_flash")
 position = Vector2(0, -9)
 sprite_frames = SubResource("SpriteFrames_lnu2h")
-animation = &"idle"
+animation = &"parry"
+frame_progress = 0.9543157
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=33773398]
 position = Vector2(0, -5)
@@ -268,7 +336,10 @@ shape = SubResource("CircleShape2D_he1uh")
 
 [node name="StateMachine" type="Node" parent="." unique_id=481562843 node_paths=PackedStringArray("initial_state")]
 script = ExtResource("4_sm")
-initial_state = NodePath("Idle")
+initial_state = NodePath("Arrive")
+
+[node name="Arrive" type="Node" parent="StateMachine"]
+script = ExtResource("28_arrive")
 
 [node name="Idle" type="Node" parent="StateMachine" unique_id=1429385286]
 script = ExtResource("5_idle")
@@ -284,6 +355,9 @@ script = ExtResource("8_attack")
 
 [node name="Parry" type="Node" parent="StateMachine" unique_id=139704952]
 script = ExtResource("17_parry")
+
+[node name="ParryThrow" type="Node" parent="StateMachine" unique_id=2011506348]
+script = ExtResource("26_parry_throw")
 
 [node name="Extract" type="Node" parent="StateMachine" unique_id=714385974]
 script = ExtResource("22_extract")
@@ -351,6 +425,26 @@ scale_amount_curve = SubResource("Curve_shrink")
 
 [node name="ParryStance" type="AnimatedSprite2D" parent="." unique_id=256449063]
 visible = false
+modulate = Color(1.8, 1.8, 1.8, 1)
 z_index = 1
 position = Vector2(0, -7)
 sprite_frames = ExtResource("21_stance")
+
+[node name="NeonTrail" parent="." unique_id=443874779 instance=ExtResource("24_neon")]
+position = Vector2(0, -9)
+amount = 20
+lifetime = 0.35
+one_shot = false
+explosiveness = 0.0
+process_material = SubResource("ShaderMaterial_trail")
+
+[node name="AimLine" type="Line2D" parent="." unique_id=557028277]
+visible = false
+top_level = true
+z_index = 10
+texture_repeat = 2
+points = PackedVector2Array(0, 0, 90, 0)
+width = 3.0
+default_color = Color(0.4032, 1.8, 0.1404, 1)
+texture = ExtResource("27_aim_dots")
+texture_mode = 1

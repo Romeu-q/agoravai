@@ -9,7 +9,8 @@ extends CharacterBody2D
 @export var speed := 45.0
 ## Distância do alvo em que o inimigo começa o ataque.
 @export var attack_range := 40.0
-@export var attack_cooldown := 1.2
+## Recarga do golpe. Enquanto recarrega, ele fica RODEANDO o jogador.
+@export var attack_cooldown := 2.2
 ## Frames da animação "attack" em que a Hitbox fica ligada (o momento do golpe).
 @export var attack_active_frames: Array[int] = [4, 5, 6]
 ## Quão rápido o empurrão (knockback) freia.
@@ -30,13 +31,52 @@ extends CharacterBody2D
 ## Frame da animação "attack" em que o projétil sai.
 @export var shoot_frame := 4
 
+@export_group("AI")
+## Distância que ele gosta de manter do jogador enquanto o ataque corpo a corpo
+## recarrega (fica rodeando). 0 = sempre vai para cima.
+@export var preferred_distance := 80.0
+## Folga em volta da distância preferida antes de se aproximar/afastar.
+@export var distance_tolerance := 18.0
+## Quão rápido muda de velocidade (maior = curvas mais secas).
+@export var acceleration := 380.0
+## Ao ir para cima, chega de lado (radianos): um "flanco" em vez de linha reta.
+@export var flank_angle := 0.45
+## Troca o sentido em que rodeia o jogador a cada X segundos (entre min e max).
+@export var strafe_time_min := 1.2
+@export var strafe_time_max := 2.6
+## Empurra para longe de outros monstros mais perto que isso (não empilham).
+@export var separation_radius := 22.0
+@export var separation_weight := 1.2
+## Aviso antes de atacar: para, treme e os olhos acendem.
+@export var windup_time := 0.4
+## Depois de atacar fica parado um instante: a janela para o jogador punir.
+@export var recover_time := 0.45
+## Velocidade da investida durante os frames ativos do ataque corpo a corpo.
+@export var lunge_speed := 160.0
+## Mira no FUTURO: 0 = onde o jogador está, 1 = onde ele vai estar.
+@export var lead_factor := 0.6
+@export var shots_per_volley := 1
+@export var volley_spread_degrees := 14.0
+
 @export_group("Flying")
 ## Para monstros voadores: o sprite sobe e desce (px). 0 = anda no chão.
 @export var bob_amount := 0.0
 @export var bob_speed := 4.0
 
+## Quantos monstros podem estar atacando (aviso + golpe) AO MESMO TEMPO.
+## `static` = uma variável só, compartilhada por TODOS os inimigos. Sem esse
+## limite, 10 monstros atacariam juntos e seria impossível reagir.
+const MAX_ATTACKERS := 2
+static var attackers := 0
+
 var target: Node2D
 var being_extracted := false
+## Próxima ação depois do aviso (Windup): &"attack" ou &"shoot".
+var next_action: StringName = &"attack"
+## Direção do golpe, TRAVADA no fim do aviso (o jogador pode sair da frente).
+var attack_direction := Vector2.RIGHT
+var _has_attack_slot := false
+var _base_eye_energy := 2.5
 var _time := randf() * TAU      # cada monstro balança num tempo diferente
 var _sprite_base_y := 0.0
 var can_attack := true
@@ -61,8 +101,18 @@ func _ready() -> void:
 	hurtbox.hurt.connect(_on_hurt)
 	_sprite_base_y = sprite.position.y
 	extract_mark.visible = false
+	# Brilho normal dos olhos. Se o material não mudou o valor, ele vem null
+	# (vale o padrão do shader, 2.5), então só troca quando existir.
+	var eye_energy = (sprite.material as ShaderMaterial).get_shader_parameter("eye_energy")
+	if eye_energy != null:
+		_base_eye_energy = eye_energy
 	# Começa em cooldown: não atira assim que nasce.
 	start_shoot_cooldown()
+
+
+## Saiu da cena (morreu, foi extraído, fim da wave): devolve a vaga de ataque.
+func _exit_tree() -> void:
+	release_attack()
 
 
 func _process(delta: float) -> void:
@@ -134,16 +184,85 @@ func wants_to_shoot() -> bool:
 	return distance >= shoot_min_range and distance <= shoot_max_range
 
 
-## Cria um projétil mirando no centro do corpo do alvo.
+## Atira uma rajada (shots_per_volley projéteis em leque) mirando ONDE O
+## JOGADOR VAI ESTAR quando o tiro chegar.
 func shoot() -> void:
 	var from := hurtbox.global_position
-	var direction := from.direction_to(target.global_position + Vector2(0, -5))
-	var projectile: Projectile = projectile_scene.instantiate()
-	projectile.direction = direction
-	projectile.shooter = self
-	projectile.collision_mask = Projectile.MASK_HITS_PLAYER
-	get_parent().add_child(projectile)
-	projectile.global_position = from + direction * 8.0
+	Sound.play("enemy_shoot")
+	for i in shots_per_volley:
+		var projectile: Projectile = projectile_scene.instantiate()
+		var aim := from.direction_to(predict_target_position(from, projectile.speed))
+		# Leque: o do meio vai reto, os outros abrem para os lados.
+		var offset := deg_to_rad((i - (shots_per_volley - 1) / 2.0) * volley_spread_degrees)
+		projectile.direction = aim.rotated(offset)
+		projectile.shooter = self
+		projectile.collision_mask = Projectile.MASK_HITS_PLAYER
+		get_parent().add_child(projectile)
+		projectile.global_position = from + projectile.direction * 8.0
+
+
+## Onde o alvo vai estar quando um tiro de velocidade `speed` chegar nele.
+## Conta simples: tempo de voo = distância / velocidade; posição futura =
+## posição + velocidade do alvo x tempo. `lead_factor` dosa o quanto confia nisso.
+func predict_target_position(from: Vector2, speed: float) -> Vector2:
+	var aim_point := target.global_position + Vector2(0, -5)   # centro do corpo
+	var body := target as CharacterBody2D
+	if body == null or speed <= 0.0:
+		return aim_point
+	var flight_time := from.distance_to(aim_point) / speed
+	# limit_length: no dash a velocidade é enorme; sem limite ele erraria longe.
+	var lead := (body.velocity * flight_time * lead_factor).limit_length(50.0)
+	return aim_point + lead
+
+
+# --- Movimento da IA -----------------------------------------------------------
+
+## Acelera suavemente até `desired` (velocidade desejada), somando o empurrão
+## para longe dos outros monstros, e move.
+func steer(desired: Vector2, delta: float) -> void:
+	var wanted := desired + separation() * speed * separation_weight
+	velocity = velocity.move_toward(wanted, acceleration * delta)
+	move_and_slide()
+
+
+## Vetor apontando para LONGE dos monstros vizinhos (mais forte quanto mais perto).
+func separation() -> Vector2:
+	var push := Vector2.ZERO
+	for node in get_tree().get_nodes_in_group("enemies"):
+		var other := node as Node2D
+		if other == null or other == self:
+			continue
+		var offset := global_position - other.global_position
+		var distance := offset.length()
+		if distance > 0.0 and distance < separation_radius:
+			push += offset / distance * (1.0 - distance / separation_radius)
+	return push.limit_length(1.0)
+
+
+# --- Vagas de ataque -----------------------------------------------------------
+
+## Tenta pegar uma das vagas de ataque. false = já tem gente demais atacando.
+func try_claim_attack() -> bool:
+	if _has_attack_slot:
+		return true
+	if attackers >= MAX_ATTACKERS:
+		return false
+	attackers += 1
+	_has_attack_slot = true
+	return true
+
+
+## Devolve a vaga (pode chamar mais de uma vez sem problema).
+func release_attack() -> void:
+	if _has_attack_slot:
+		_has_attack_slot = false
+		attackers -= 1
+
+
+## Brilho extra dos olhos (0 = normal, 1 = máximo). Usado no aviso de ataque.
+func set_eye_glow(amount: float) -> void:
+	(sprite.material as ShaderMaterial).set_shader_parameter("eye_energy",
+		_base_eye_energy * (1.0 + amount * 2.0))
 
 
 func start_shoot_cooldown() -> void:
@@ -171,6 +290,7 @@ func _on_hurt(hitbox_that_hit: Hitbox) -> void:
 
 	# Flash branco + esguicho de partículas finas saindo do lado oposto ao golpe.
 	Juice.flash(sprite)
+	Sound.play("hit")
 	Juice.burst(hurtbox.global_position, blood_color, 14,
 		knockback.normalized(), 25.0, 1.0, 170.0)
 	Juice.hitstop(0.05)

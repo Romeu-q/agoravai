@@ -1,0 +1,16 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/effects/laser_beam.gd" id="1_laser"]
+[ext_resource type="Texture2D" path="res://assets/Effects/laser_beam.png" id="2_beam"]
+
+[node name="LaserBeam" type="Node2D"]
+z_index = 10
+script = ExtResource("1_laser")
+
+[node name="Beam" type="Line2D" parent="."]
+texture_repeat = 2
+points = PackedVector2Array(0, -260, 0, 0)
+width = 9.0
+default_color = Color(1.8, 1.8, 1.8, 1)
+texture = ExtResource("2_beam")
+texture_mode = 1

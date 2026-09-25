@@ -13,7 +13,9 @@ var successes := 0
 
 func enter() -> void:
 	player.velocity = Vector2.ZERO
-	player.sprite.play("idle")
+	# stop() antes: se der parry duas vezes seguidas, a postura recomeça do quadro 0.
+	player.sprite.stop()
+	player.sprite.play("parry")   # postura de guarda (assets/Player/Parrystance.png)
 	successes = 0
 	window_left = player.parry_window
 	time_left = player.parry_duration
@@ -23,6 +25,7 @@ func enter() -> void:
 	player.hurtbox.parried.connect(_on_parried)
 	# "Abriu a guarda": anelzinho rápido na cor do chifre.
 	Juice.ring(player.hurtbox.global_position, player.horn_color, 9.0, 0.12)
+	Sound.play("parry_open")
 
 
 func exit() -> void:
@@ -60,10 +63,13 @@ func _on_parried(hitbox: Hitbox) -> void:
 	time_left = maxf(time_left, window_left + 0.1)
 	_set_guard(true)
 
-	# Projétil volta para quem atirou; golpe corpo a corpo atordoa quem atacou.
+	# Golpe corpo a corpo atordoa quem atacou. Projétil é PEGO (fica parado no ar)
+	# e no fim desta função vamos para o estado ParryThrow, onde o jogador mira.
 	# `is` testa o tipo; `as` converte (vira null se não for daquele tipo).
-	if hitbox is Projectile:
-		(hitbox as Projectile).reflect(player.horn_color)
+	var projectile := hitbox as Projectile
+	if projectile:
+		projectile.catch(player.horn_color)
+		player.caught_projectiles.append(projectile)
 	else:
 		var attacker := hitbox.owner as Enemy
 		if attacker:
@@ -74,11 +80,17 @@ func _on_parried(hitbox: Hitbox) -> void:
 	# (senão rebater 5 projéteis congelaria o jogo por 1 segundo).
 	var contact := player.hurtbox.global_position.lerp(hitbox.global_position, 0.5)
 	var first := successes == 1
+	Sound.play("parry" if first else "parry_open", 0.1)
 	Juice.hitstop(0.18 if first else 0.05, 0.02)
 	Juice.shake(0.35 if first else 0.15)
 	if first:
 		Juice.punch(0.12)
-	Juice.play_effect(PARRY_BURST, contact, player.horn_color)
-	Juice.play_effect(PARRY_BURST, contact, Color.WHITE, 0.5)
-	Juice.burst(contact, Color.WHITE, 12, contact.direction_to(hitbox.global_position),
-		70.0, 1.0, 160.0)
+	# O sheet já vem colorido (neon): modulate BRANCO = cores originais.
+	Juice.play_effect(PARRY_BURST, contact)
+	# Estilhaços neon voando para longe do jogador, na direção do golpe aparado.
+	Juice.neon_burst(contact, 10 if first else 6,
+		contact.direction_to(hitbox.global_position), 60.0,
+		{"weights_main": Vector3(1.0, 0.5, 1.5), "weights_special": Vector3(1.5, 1.5, 0.5)})
+
+	if projectile:
+		transitioned.emit(&"parrythrow")

@@ -6,6 +6,7 @@ extends EnemyState
 func enter() -> void:
 	enemy.hurtbox.invincible = true
 	enemy.sprite.play("spawn")
+	Sound.play("spawn")
 
 
 func exit() -> void:

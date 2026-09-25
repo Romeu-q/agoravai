@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" path="res://assets/Monsters/Shrinker/shrinker_walk.png" id="2_walk"]
 [ext_resource type="Texture2D" path="res://assets/Monsters/Shrinker/shrinker_attack.png" id="3_attack"]
 [ext_resource type="Texture2D" path="res://assets/Monsters/Shrinker/Shrinker_spawn_teleport.png" id="4_spawn"]
-[ext_resource type="Shader" path="res://shaders/flash.gdshader" id="5_flash"]
+[ext_resource type="Shader" path="res://shaders/enemy.gdshader" id="5_flash"]
 [ext_resource type="Script" path="res://scripts/components/health_component.gd" id="6_health"]
 [ext_resource type="Script" path="res://scripts/components/hurtbox.gd" id="7_hurtbox"]
 [ext_resource type="Script" path="res://scripts/components/hitbox.gd" id="8_hitbox"]
@@ -20,6 +20,8 @@
 [ext_resource type="Texture2D" path="res://assets/Effects/shadow.png" id="18_shadow"]
 [ext_resource type="SpriteFrames" path="res://resources/effects/extract_mark.tres" id="19_mark"]
 [ext_resource type="Script" path="res://scripts/enemies/states/extracted.gd" id="20_extracted"]
+[ext_resource type="Script" path="res://scripts/enemies/states/windup.gd" id="21_windup"]
+[ext_resource type="Script" path="res://scripts/enemies/states/recover.gd" id="22_recover"]
 
 [sub_resource type="AtlasTexture" id="walk_0"]
 atlas = ExtResource("2_walk")
@@ -263,6 +265,12 @@ script = ExtResource("11_spawn")
 [node name="Chase" type="Node" parent="StateMachine"]
 script = ExtResource("12_chase")
 
+[node name="Windup" type="Node" parent="StateMachine"]
+script = ExtResource("21_windup")
+
+[node name="Recover" type="Node" parent="StateMachine"]
+script = ExtResource("22_recover")
+
 [node name="Attack" type="Node" parent="StateMachine"]
 script = ExtResource("13_attack")
 
@@ -280,6 +288,7 @@ script = ExtResource("20_extracted")
 
 [node name="ExtractMark" type="AnimatedSprite2D" parent="."]
 visible = false
+modulate = Color(1.8, 1.8, 1.8, 1)
 z_index = 5
 position = Vector2(0, -38)
 sprite_frames = ExtResource("19_mark")

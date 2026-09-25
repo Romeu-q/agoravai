@@ -39,6 +39,29 @@ func deactivate() -> void:
 	set_deferred("monitoring", false)
 
 
+## Cria uma EXPLOSÃO: uma Hitbox redonda que existe só por um instante e acerta
+## todo mundo dentro do raio. Sem dono, o knockback sai do centro (empurra para fora).
+## `static` = função da CLASSE: chama com `Hitbox.spawn_blast(...)`, sem precisar
+## de uma Hitbox já existente.
+static func spawn_blast(parent: Node, center: Vector2, radius: float, blast_damage: int,
+		knockback: float, mask: int) -> Hitbox:
+	var blast := Hitbox.new()
+	blast.damage = blast_damage
+	blast.knockback_force = knockback
+	blast.collision_layer = 0
+	blast.collision_mask = mask
+	blast.monitorable = false
+	var shape := CollisionShape2D.new()
+	var circle := CircleShape2D.new()
+	circle.radius = radius
+	shape.shape = circle
+	blast.add_child(shape)
+	parent.add_child(blast)
+	blast.global_position = center
+	blast.get_tree().create_timer(0.1).timeout.connect(blast.queue_free)
+	return blast
+
+
 func get_knockback(target_position: Vector2) -> Vector2:
 	var direction := knockback_direction
 	if direction == Vector2.ZERO:

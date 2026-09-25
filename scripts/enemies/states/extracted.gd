@@ -11,6 +11,7 @@ var _base_scale := Vector2.ONE
 
 
 func enter() -> void:
+	enemy.release_attack()
 	enemy.hurtbox.invincible = true
 	enemy.hitbox.deactivate()
 	enemy.set_deferred("collision_layer", 0)
@@ -53,4 +54,7 @@ func absorb_into(by: Node2D) -> void:
 	absorb_left = absorb_time
 	_start_position = enemy.global_position
 	enemy.sprite.offset = Vector2.ZERO
-	Juice.burst(enemy.hurtbox.global_position, enemy.blood_color, 24, Vector2.ZERO, 180.0, 2.0, 120.0)
+	# A essência sendo arrancada: explosão neon roxa/rosa (as cores da extração).
+	Juice.neon_burst(enemy.hurtbox.global_position, 14, Vector2.ZERO, 180.0,
+		{"weights_main": Vector3(1.0, 0.0, 1.0), "weights_special": Vector3(2.0, 0.5, 2.0),
+		"speed_max": 100.0})

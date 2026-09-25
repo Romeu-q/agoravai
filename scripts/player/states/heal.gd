@@ -16,9 +16,12 @@ func enter() -> void:
 	player.sprite.play("idle")
 	player.heal_particles.emitting = true   # partículas sendo "puxadas" para o corpo
 	time_left = player.heal_time
+	# Som da carga ("Soul focus"): dura heal_time e corta seco quando a cura sai.
+	Sound.play("heal_charge", 0.0)
 
 
 func exit() -> void:
+	Sound.stop("heal_charge")   # soltou antes: o som para junto
 	player.heal_particles.emitting = false
 	player.set_glow(0.0)
 	Juice.focus(0.0)    # câmera volta ao zoom normal (suavemente)
@@ -42,12 +45,17 @@ func physics_update(delta: float) -> void:
 		Juice.flash(player.sprite, 0.3)
 		Juice.ring(center, player.horn_color, 18.0, 0.3)
 		Juice.ring(center, Color.WHITE, 10.0, 0.2)
-		Juice.burst(center, Color.WHITE, 18, Vector2.UP, 70.0, 2.0, 110.0)
+		# Cura = paleta principal: sobe um jato de verde, branco e preto.
+		Juice.neon_burst(center, 12, Vector2.UP, 50.0,
+			{"weights_main": Vector3(0.5, 2.0, 1.5), "weights_special": Vector3.ZERO,
+			"speed_max": 110.0})
 		Juice.shake(0.45)   # a cura "estoura"
+		Sound.play("heal", 0.0)
 		Juice.punch(0.08)
 
 		# Segurando ainda e com alma sobrando? Cura de novo em sequência.
 		if player.can_heal():
 			time_left = player.heal_time
+			Sound.play("heal_charge", 0.0)   # começa a próxima carga
 		else:
 			transitioned.emit(&"idle")

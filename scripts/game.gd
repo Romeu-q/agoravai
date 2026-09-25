@@ -8,12 +8,23 @@ var bounds: Rect2
 @onready var tile_map: TileMapLayer = $TileMapLayer
 @onready var player: Player = $Player
 @onready var camera: Camera2D = $Player/Camera2D
+@onready var floor_pattern: Sprite2D = $TileMapLayer/FloorPattern
 
 
 func _ready() -> void:
+	Sound.play_music(Sound.GAME_MUSIC)   # vindo do menu, troca de trilha com fade
 	bounds = _get_map_bounds()
 	_limit_camera(bounds)
 	_create_walls(bounds)
+	_cover_floor(bounds)
+
+
+# Estica o desenho geométrico do chão pelo mapa inteiro.
+# Com Region ligada e Texture Repeat = Enabled, uma região MAIOR que a textura
+# faz ela se repetir (como um papel de parede). A opacidade baixa vem do modulate.
+func _cover_floor(map_bounds: Rect2) -> void:
+	floor_pattern.global_position = map_bounds.position
+	floor_pattern.region_rect = Rect2(Vector2.ZERO, map_bounds.size)
 
 
 # Retorna o retângulo (em pixels, coordenadas globais) ocupado pelos tiles pintados.

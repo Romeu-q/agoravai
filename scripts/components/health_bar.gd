@@ -1,7 +1,7 @@
 extends Node2D
 ## Barra de vida em "pips" (quadradinhos), no estilo de Hyper Light Drifter.
 ## Cada pip é um Sprite2D usando a spritesheet assets/UI/enemy_pip.png,
-## que tem 3 frames: 0 = cheio, 1 = perdido (branco), 2 = vazio.
+## que tem 3 frames: 0 = cheio (laranja = perigo), 1 = perdido (branco), 2 = vazio.
 ## Fica escondida e aparece por alguns segundos quando o dono toma dano.
 
 
@@ -11,8 +11,8 @@ const FRAME_LOST := 1
 const FRAME_EMPTY := 2
 
 @export var health: HealthComponent
-## Distância entre pips. 1 a menos que a largura do pip: as bordas pretas se sobrepõem.
-@export var pip_step := 4
+## Distância entre pips (o pip tem 4 px de largura: sobra 1 px de espaço).
+@export var pip_step := 5
 @export var visible_time := 2.5
 
 var _pips: Array[Sprite2D] = []

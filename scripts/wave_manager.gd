@@ -141,6 +141,7 @@ func _random_spawn_point() -> Vector2:
 func _telegraph(point: Vector2, scene: PackedScene) -> void:
 	var marker := AnimatedSprite2D.new()
 	marker.sprite_frames = MARKER_FRAMES
+	marker.modulate = Color(Juice.GLOW, Juice.GLOW, Juice.GLOW)   # brilha (Glow)
 	game.add_child(marker)
 	marker.global_position = point
 	marker.play("default")
