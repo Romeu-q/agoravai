@@ -36,6 +36,7 @@ var _explosive := false
 var _blast_mask := 16
 
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
+@onready var collision: CollisionPolygon2D = $CollisionPolygon2D
 
 
 func _ready() -> void:
@@ -105,6 +106,8 @@ func _set_direction(new_direction: Vector2) -> void:
 	direction = new_direction
 	knockback_direction = direction
 	sprite.rotation = direction.angle() - deg_to_rad(sprite_angle_offset_degrees)
+	# A colisão tem o formato EXATO do desenho (1:1), então gira junto com ele.
+	collision.rotation = sprite.rotation
 
 
 func _explode() -> void:

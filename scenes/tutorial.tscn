@@ -1,0 +1,16 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/game.tscn" id="1_game"]
+[ext_resource type="PackedScene" path="res://scenes/ui/tutorial_ui.tscn" id="2_ui"]
+[ext_resource type="Script" path="res://scripts/tutorial/tutorial_director.gd" id="3_director"]
+
+[node name="Tutorial" instance=ExtResource("1_game")]
+
+[node name="WaveManager" parent="."]
+auto_start = false
+upgrades_enabled = false
+
+[node name="TutorialUI" parent="." instance=ExtResource("2_ui")]
+
+[node name="TutorialDirector" type="Node" parent="."]
+script = ExtResource("3_director")

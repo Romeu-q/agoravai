@@ -1,0 +1,222 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/enemies/shrinker.tscn" id="1_base"]
+[ext_resource type="Shader" path="res://shaders/enemy.gdshader" id="2_shader"]
+[ext_resource type="Texture2D" path="res://assets/Effects/shadow_small.png" id="3_shadow"]
+[ext_resource type="Texture2D" path="res://assets/Monsters/Stalker/stalker_walk.png" id="4_walk"]
+[ext_resource type="Texture2D" path="res://assets/Monsters/Stalker/stalker_attack.png" id="5_attack"]
+[ext_resource type="Texture2D" path="res://assets/Monsters/Stalker/stalker_spawn.png" id="6_spawn"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_stalker"]
+resource_local_to_scene = true
+shader = ExtResource("2_shader")
+shader_parameter/flash = 0.0
+shader_parameter/flash_color = Color(1, 1, 1, 1)
+shader_parameter/eye_color = Color(1, 0.04, 0.55, 1)
+
+[sub_resource type="CircleShape2D" id="Shape_body_small"]
+radius = 5.0
+
+[sub_resource type="AtlasTexture" id="walk_0"]
+atlas = ExtResource("4_walk")
+region = Rect2(0, 0, 56, 24)
+
+[sub_resource type="AtlasTexture" id="walk_1"]
+atlas = ExtResource("4_walk")
+region = Rect2(56, 0, 56, 24)
+
+[sub_resource type="AtlasTexture" id="walk_2"]
+atlas = ExtResource("4_walk")
+region = Rect2(112, 0, 56, 24)
+
+[sub_resource type="AtlasTexture" id="walk_3"]
+atlas = ExtResource("4_walk")
+region = Rect2(168, 0, 56, 24)
+
+[sub_resource type="AtlasTexture" id="walk_4"]
+atlas = ExtResource("4_walk")
+region = Rect2(224, 0, 56, 24)
+
+[sub_resource type="AtlasTexture" id="walk_5"]
+atlas = ExtResource("4_walk")
+region = Rect2(280, 0, 56, 24)
+
+[sub_resource type="AtlasTexture" id="atk_0"]
+atlas = ExtResource("5_attack")
+region = Rect2(0, 0, 56, 24)
+
+[sub_resource type="AtlasTexture" id="atk_1"]
+atlas = ExtResource("5_attack")
+region = Rect2(56, 0, 56, 24)
+
+[sub_resource type="AtlasTexture" id="atk_2"]
+atlas = ExtResource("5_attack")
+region = Rect2(112, 0, 56, 24)
+
+[sub_resource type="AtlasTexture" id="atk_3"]
+atlas = ExtResource("5_attack")
+region = Rect2(168, 0, 56, 24)
+
+[sub_resource type="AtlasTexture" id="atk_4"]
+atlas = ExtResource("5_attack")
+region = Rect2(224, 0, 56, 24)
+
+[sub_resource type="AtlasTexture" id="atk_5"]
+atlas = ExtResource("5_attack")
+region = Rect2(280, 0, 56, 24)
+
+[sub_resource type="AtlasTexture" id="atk_6"]
+atlas = ExtResource("5_attack")
+region = Rect2(336, 0, 56, 24)
+
+[sub_resource type="AtlasTexture" id="atk_7"]
+atlas = ExtResource("5_attack")
+region = Rect2(392, 0, 56, 24)
+
+[sub_resource type="AtlasTexture" id="spawn_0"]
+atlas = ExtResource("6_spawn")
+region = Rect2(0, 0, 56, 24)
+
+[sub_resource type="AtlasTexture" id="spawn_1"]
+atlas = ExtResource("6_spawn")
+region = Rect2(56, 0, 56, 24)
+
+[sub_resource type="AtlasTexture" id="spawn_2"]
+atlas = ExtResource("6_spawn")
+region = Rect2(112, 0, 56, 24)
+
+[sub_resource type="AtlasTexture" id="spawn_3"]
+atlas = ExtResource("6_spawn")
+region = Rect2(168, 0, 56, 24)
+
+[sub_resource type="AtlasTexture" id="spawn_4"]
+atlas = ExtResource("6_spawn")
+region = Rect2(224, 0, 56, 24)
+
+[sub_resource type="AtlasTexture" id="spawn_5"]
+atlas = ExtResource("6_spawn")
+region = Rect2(280, 0, 56, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_stalker"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("atk_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("atk_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("atk_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("atk_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("atk_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("atk_5")
+}, {
+"duration": 1.0,
+"texture": SubResource("atk_6")
+}, {
+"duration": 1.0,
+"texture": SubResource("atk_7")
+}],
+"loop": false,
+"name": &"attack",
+"speed": 14.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("spawn_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("spawn_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("spawn_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("spawn_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("spawn_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("spawn_5")
+}],
+"loop": false,
+"name": &"spawn",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("walk_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("walk_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("walk_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("walk_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("walk_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("walk_5")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 12.0
+}]
+
+[node name="Stalker" instance=ExtResource("1_base")]
+speed = 72.0
+attack_range = 18.0
+attack_cooldown = 1.4
+attack_active_frames = Array[int]([3, 4, 5])
+blood_color = Color(0.12, 0.02, 0.08, 1)
+projectile_scene = null
+preferred_distance = 0.0
+flank_angle = 0.8
+windup_time = 0.28
+recover_time = 0.35
+lunge_speed = 210.0
+bob_amount = 0.0
+
+[node name="Shadow" parent="."]
+texture = ExtResource("3_shadow")
+
+[node name="AnimatedSprite2D" parent="."]
+material = SubResource("ShaderMaterial_stalker")
+position = Vector2(0, -8)
+scale = Vector2(1, 1)
+sprite_frames = SubResource("SpriteFrames_stalker")
+animation = &"spawn"
+
+[node name="CollisionShape2D" parent="."]
+position = Vector2(0, -4)
+shape = SubResource("Shape_body_small")
+
+[node name="HealthComponent" parent="."]
+max_health = 2
+
+[node name="Hurtbox" parent="."]
+position = Vector2(0, -7)
+
+[node name="CollisionPolygon2D" parent="Hurtbox"]
+polygon = PackedVector2Array(-13, -3, -4, -9, 4, -9, 13, -3, 13, 0, 9, 7, -9, 7, -13, 0)
+
+[node name="AttackPivot" parent="."]
+position = Vector2(0, -7)
+
+[node name="CollisionPolygon2D" parent="AttackPivot/Hitbox"]
+polygon = PackedVector2Array(10, -3, 20, -6, 23, -6, 24, -5, 27, 0, 27, 1, 23, 3, 22, 3, 11, -1, 10, -2)
+
+[node name="ExtractMark" parent="."]
+position = Vector2(0, -22)

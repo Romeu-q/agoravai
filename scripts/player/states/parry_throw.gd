@@ -139,7 +139,9 @@ func _throw() -> void:
 	var count := player.caught_projectiles.size()
 	for i in count:
 		var offset := deg_to_rad((i - (count - 1) / 2.0) * SPREAD_DEGREES)
-		player.caught_projectiles[i].launch(aim.rotated(offset))
+		var projectile := player.caught_projectiles[i]
+		projectile.blast_radius *= player.throw_blast_scale   # melhoria ESTILHACO
+		projectile.launch(aim.rotated(offset))
 	player.caught_projectiles.clear()
 
 	# Corte INVERTIDO: o slash sai no sentido contrário ao último golpe.

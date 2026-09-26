@@ -4,11 +4,17 @@ extends Node2D
 
 ## Retângulo do mapa em pixels (o WaveManager usa para sortear onde nascer).
 var bounds: Rect2
+## Estatísticas da partida (aparecem na tela de fim de jogo).
+var kills := 0
+var elapsed := 0.0
+var is_over := false
 
 @onready var tile_map: TileMapLayer = $TileMapLayer
 @onready var player: Player = $Player
 @onready var camera: Camera2D = $Player/Camera2D
 @onready var floor_pattern: Sprite2D = $TileMapLayer/FloorPattern
+@onready var waves: WaveManager = $WaveManager
+@onready var game_over_screen: GameOverScreen = $GameOver
 
 
 func _ready() -> void:
@@ -17,6 +23,25 @@ func _ready() -> void:
 	_limit_camera(bounds)
 	_create_walls(bounds)
 	_cover_floor(bounds)
+
+
+func _process(delta: float) -> void:
+	if not is_over:
+		elapsed += delta
+
+
+## Um inimigo foi derrotado PELO JOGADOR (dano ou extração).
+func register_kill() -> void:
+	kills += 1
+
+
+## Chamado pelo estado Dead do jogador quando a animação de morte termina.
+func game_over() -> void:
+	if is_over:
+		return
+	is_over = true
+	var new_record := Settings.submit_wave(waves.wave)
+	game_over_screen.open(waves.wave, kills, elapsed, Settings.best_wave, new_record)
 
 
 # Estica o desenho geométrico do chão pelo mapa inteiro.

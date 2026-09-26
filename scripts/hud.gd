@@ -61,8 +61,9 @@ func _ready() -> void:
 
 # --- Montagem ------------------------------------------------------------------
 
+## Cria os pips que faltam (no começo: todos; com a melhoria VIGOR: o novo).
 func _create_pips() -> void:
-	for i in player.health.max_health:
+	for i in range(_pips.size(), player.health.max_health):
 		var pip := Sprite2D.new()
 		pip.texture = PIP_TEXTURE
 		pip.hframes = 3
@@ -180,7 +181,11 @@ func _refresh_pips() -> void:
 
 # --- Sinais do Player ----------------------------------------------------------
 
-func _on_health_changed(health: int, _max_health: int) -> void:
+func _on_health_changed(health: int, max_health: int) -> void:
+	# A vida máxima aumentou (melhoria): cria o pip novo e estica o traço.
+	if max_health > _pips.size():
+		_create_pips()
+		_layout_trace()
 	if health < _health:
 		# Cada pip perdido estoura: branco, rosa e preto.
 		for i in range(health, _health):

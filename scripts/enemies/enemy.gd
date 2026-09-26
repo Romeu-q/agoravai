@@ -32,6 +32,10 @@ extends CharacterBody2D
 @export var shoot_frame := 4
 
 @export_group("AI")
+## Desligue para um monstro que NÃO ataca corpo a corpo (ex.: atirador do tutorial).
+@export var melee_enabled := true
+## Desligue para um monstro PARADO (ex.: boneco de treino do tutorial).
+@export var move_enabled := true
 ## Distância que ele gosta de manter do jogador enquanto o ataque corpo a corpo
 ## recarrega (fica rodeando). 0 = sempre vai para cima.
 @export var preferred_distance := 80.0
@@ -146,9 +150,18 @@ func start_extraction() -> void:
 
 ## Segunda parte: a essência é arrancada em direção a `extractor`.
 func extract(extractor: Node2D) -> void:
+	_register_kill()
 	var state := state_machine.current_state
 	if state.has_method("absorb_into"):
 		state.absorb_into(extractor)
+
+
+## Conta a morte na partida (se a cena atual for um Game).
+## As mortes do FIM da wave não passam por aqui: não contam.
+func _register_kill() -> void:
+	var game := get_tree().current_scene as Game
+	if game:
+		game.register_kill()
 
 
 func has_target() -> bool:
@@ -297,6 +310,7 @@ func _on_hurt(hitbox_that_hit: Hitbox) -> void:
 	Juice.shake(0.15)
 
 	if health.is_dead():
+		_register_kill()
 		state_machine.transition_to(&"death")
 	else:
 		stun_time = hurt_stun_time

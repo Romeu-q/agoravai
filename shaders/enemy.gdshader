@@ -11,12 +11,15 @@ uniform float eye_threshold : hint_range(0.0, 1.0) = 0.5;
 // Quanto os olhos brilham. Acima de 1 a cor passa do branco e o Glow do
 // WorldEnvironment cria o halo de luz em volta.
 uniform float eye_energy = 2.5;
+// Troca a cor dos olhos (variantes de monstro). O alpha diz QUANTO troca:
+// 0 = olhos originais do desenho, 1 = totalmente nesta cor.
+uniform vec4 eye_color : source_color = vec4(1.0, 1.0, 1.0, 0.0);
 
 void fragment() {
 	vec4 color = COLOR;   // já vem com a cor da textura
 	float brightness = dot(color.rgb, vec3(0.299, 0.587, 0.114));
 	if (brightness > eye_threshold) {
-		color.rgb *= eye_energy;
+		color.rgb = mix(color.rgb, eye_color.rgb, eye_color.a) * eye_energy;
 	}
 	color.rgb = mix(color.rgb, flash_color.rgb, flash);
 	COLOR = color;

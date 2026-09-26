@@ -29,12 +29,16 @@ func physics_update(delta: float) -> void:
 	var distance := enemy.distance_to_target()
 	enemy.face(to_target)
 
+	if not enemy.move_enabled:
+		enemy.steer(Vector2.ZERO, delta)   # boneco de treino: só vira para o jogador
+		return
+
 	strafe_timer -= delta
 	if strafe_timer <= 0.0 or enemy.is_on_wall():
 		_pick_strafe()   # bateu na parede ou deu o tempo: muda o sentido
 
 	var desired: Vector2
-	if enemy.can_attack or enemy.preferred_distance <= 0.0:
+	if (enemy.can_attack and enemy.melee_enabled) or enemy.preferred_distance <= 0.0:
 		# Vai para cima, mas em curva (flanco): ângulo que diminui ao chegar perto.
 		var closeness := clampf(distance / 120.0, 0.0, 1.0)
 		desired = to_target.rotated(enemy.flank_angle * strafe_sign * closeness)
@@ -54,7 +58,8 @@ func physics_update(delta: float) -> void:
 
 ## Decide se ataca agora. Precisa: estar em condições E conseguir uma vaga.
 func _try_start_attack() -> bool:
-	var wants_melee := enemy.can_attack and enemy.distance_to_target() <= enemy.attack_range
+	var wants_melee := enemy.melee_enabled and enemy.can_attack \
+		and enemy.distance_to_target() <= enemy.attack_range
 	var wants_shot := not wants_melee and enemy.wants_to_shoot()
 	if not (wants_melee or wants_shot) or not enemy.try_claim_attack():
 		return false

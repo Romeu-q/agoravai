@@ -27,7 +27,15 @@ func _ready() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not event.is_action_pressed("ui_cancel"):
+	# Abre/fecha com "pause" (ESC ou START). Com o menu aberto, "ui_cancel"
+	# (o B do controle) também fecha. No jogo o B é EXTRAIR: ele não pode pausar.
+	var toggle := event.is_action_pressed("pause")
+	var back := root.visible and event.is_action_pressed("ui_cancel")
+	if not (toggle or back):
+		return
+	# Já pausado por OUTRA coisa (fim de jogo, escolha de melhoria, tutorial):
+	# o pause não abre por cima.
+	if get_tree().paused and not root.visible:
 		return
 	# (Se as opções estiverem abertas, o próprio painel trata o ESC antes.)
 	if root.visible:

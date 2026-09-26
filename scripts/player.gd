@@ -84,6 +84,21 @@ var slash_flipped := false
 var combo_time_left := 0.0
 ## Projéteis pegos no parry, esperando a mira (estado ParryThrow).
 var caught_projectiles: Array[Projectile] = []
+## Multiplicador do raio da explosão dos projéteis devolvidos (melhoria ESTILHACO).
+var throw_blast_scale := 1.0
+## Nível de cada melhoria pega nesta partida (Upgrade -> nível).
+var upgrade_levels := {}
+
+
+## (Tipado como Resource, e não Upgrade: o Upgrade já usa o tipo Player,
+## e dois scripts dependendo um do outro confundem o editor.)
+func get_upgrade_level(upgrade: Resource) -> int:
+	return upgrade_levels.get(upgrade, 0)
+
+
+func apply_upgrade(upgrade: Resource) -> void:
+	upgrade_levels[upgrade] = get_upgrade_level(upgrade) + 1
+	upgrade.apply(self)
 
 # Duas fontes de invencibilidade: o dash e o "tempo de graça" após tomar dano.
 var _dashing := false
@@ -205,8 +220,24 @@ func get_animation_length(animation: StringName, target: AnimatedSprite2D = null
 
 
 ## Direção (tamanho 1) do centro do corpo até o mouse.
+## Para onde o jogador está mirando.
+## Mouse: do jogador até o cursor. Controle: o analógico direito; solto, mira
+## para onde está andando; parado, para onde está virado.
 func get_aim_direction() -> Vector2:
+	if InputMode.using_gamepad:
+		var stick := InputMode.aim_vector()
+		if stick.length() > 0.3:
+			return stick.normalized()
+		var move := get_input_direction()
+		return move.normalized() if move != Vector2.ZERO else facing
 	return attack_pivot.global_position.direction_to(get_global_mouse_position())
+
+
+## Ponto "mirado" no mundo: o cursor, ou (no controle) um ponto à frente na mira.
+func get_aim_point() -> Vector2:
+	if InputMode.using_gamepad:
+		return global_position + get_aim_direction() * 60.0
+	return get_global_mouse_position()
 
 
 func update_facing(direction: Vector2) -> void:
@@ -260,7 +291,7 @@ func set_extracting(value: bool) -> void:
 func find_extract_target() -> Enemy:
 	var best: Enemy = null
 	var best_distance := INF
-	var mouse := get_global_mouse_position()
+	var mouse := get_aim_point()
 	for node in get_tree().get_nodes_in_group("enemies"):
 		var enemy := node as Enemy
 		if enemy == null or not enemy.is_extractable():

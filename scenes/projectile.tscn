@@ -472,9 +472,6 @@ shader = ExtResource("4_flash")
 shader_parameter/flash = 0.0
 shader_parameter/flash_color = Color(1, 1, 1, 1)
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_proj"]
-radius = 3.0
-
 [node name="Projectile" type="Area2D" unique_id=943400168]
 collision_layer = 0
 collision_mask = 17
@@ -488,6 +485,5 @@ sprite_frames = SubResource("SpriteFrames_proj")
 animation = &"fly"
 frame_progress = 0.050661463
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=263745121]
-position = Vector2(0, 0)
-shape = SubResource("CircleShape2D_proj")
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(-5.75, -4.5, -4.25, -6, -2.25, -6, 2.75, -2.5, 5.75, 0.5, 5.75, 3.5, 4.25, 5, 2.25, 5, -0.25, 3, -1.75, 1.5, -5.25, -2.5, -5.75, -3.5)

@@ -6,6 +6,7 @@ extends Control
 
 
 const GAME_SCENE := "res://scenes/game.tscn"
+const TUTORIAL_SCENE := "res://scenes/tutorial.tscn"
 const DARK := Color(0.02, 0.05, 0.06)
 ## Tamanho do "pixel" do desenho do chão (o jogo usa zoom 4; aqui 3).
 const PATTERN_SCALE := 3.0
@@ -32,7 +33,8 @@ func _ready() -> void:
 	get_viewport().size_changed.connect(_fit_floor_pattern)
 
 	# Botões -> ações. bind() "prende" um argumento na chamada.
-	$Panels/Main/Play.pressed.connect(_on_play)
+	$Panels/Main/Play.pressed.connect(_start.bind(GAME_SCENE))
+	$Panels/Main/Tutorial.pressed.connect(_start.bind(TUTORIAL_SCENE))
 	$Panels/Main/Options.pressed.connect(_show_panel.bind(options_panel))
 	$Panels/Main/Controls.pressed.connect(_show_panel.bind(controls_panel))
 	$Panels/Main/Quit.pressed.connect(get_tree().quit)
@@ -118,14 +120,14 @@ func _back() -> void:
 	_show_panel(main_panel)
 
 
-func _on_play() -> void:
+## JOGAR ou TUTORIAL: tudo apaga para o escuro e a cena começa.
+func _start(scene: String) -> void:
 	if _leaving:
 		return
 	_leaving = true
-	# Tudo apaga para o escuro e o jogo começa (a música troca com fade).
 	var tween := create_tween()
 	tween.tween_property(fade, "color:a", 1.0, 0.7).set_trans(Tween.TRANS_SINE)
-	tween.tween_callback(get_tree().change_scene_to_file.bind(GAME_SCENE))
+	tween.tween_callback(get_tree().change_scene_to_file.bind(scene))
 
 
 # --- Utilidades ----------------------------------------------------------------

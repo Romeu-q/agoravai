@@ -15,6 +15,8 @@ var music_volume := 0.8
 var sfx_volume := 1.0
 var screen_shake := true
 var fullscreen := false
+## Recorde: a wave mais alta que o jogador já alcançou.
+var best_wave := 0
 
 
 func _ready() -> void:
@@ -30,6 +32,7 @@ func load_settings() -> void:
 	sfx_volume = config.get_value("audio", "sfx", sfx_volume)
 	screen_shake = config.get_value("video", "screen_shake", screen_shake)
 	fullscreen = config.get_value("video", "fullscreen", fullscreen)
+	best_wave = config.get_value("records", "best_wave", best_wave)
 
 
 func save_settings() -> void:
@@ -38,7 +41,17 @@ func save_settings() -> void:
 	config.set_value("audio", "sfx", sfx_volume)
 	config.set_value("video", "screen_shake", screen_shake)
 	config.set_value("video", "fullscreen", fullscreen)
+	config.set_value("records", "best_wave", best_wave)
 	config.save(PATH)
+
+
+## Registra a wave alcançada. Retorna true se for um NOVO recorde.
+func submit_wave(wave: int) -> bool:
+	if wave <= best_wave:
+		return false
+	best_wave = wave
+	save_settings()
+	return true
 
 
 ## Aplica tudo de uma vez (volumes nos buses, modo da janela) e salva.

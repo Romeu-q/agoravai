@@ -44,6 +44,8 @@ func shake(amount := 0.3) -> void:
 	var camera := get_viewport().get_camera_2d()
 	if camera and camera.has_method("add_trauma"):
 		camera.add_trauma(amount)
+	# No controle, a tremida também VIBRA (motor fraco + forte, proporcional).
+	InputMode.vibrate(amount * 0.8, amount, 0.1 + amount * 0.25)
 
 
 ## Zoom rápido para dentro que volta ao normal: destaca um momento importante.

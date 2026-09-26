@@ -180,7 +180,7 @@ anchor_right = 0.5
 offset_left = -250.0
 offset_top = 240.0
 offset_right = 250.0
-offset_bottom = 420.0
+offset_bottom = 465.0
 grow_horizontal = 2
 theme_override_constants/separation = 4
 alignment = 1
@@ -190,6 +190,13 @@ custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "JOGAR"
+script = ExtResource("2_button")
+
+[node name="Tutorial" type="Button" parent="Panels/Main"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "TUTORIAL"
 script = ExtResource("2_button")
 
 [node name="Options" type="Button" parent="Panels/Main"]
@@ -241,35 +248,35 @@ alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0.75, 0.96, 0.88, 0.8)
 theme_override_font_sizes/font_size = 16
-text = "WASD - MOVER"
+text = "MOVER: WASD  /  ANALOGICO ESQ."
 horizontal_alignment = 1
 
 [node name="Aim" type="Label" parent="Panels/Controls"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.75, 0.96, 0.88, 0.8)
 theme_override_font_sizes/font_size = 16
-text = "MOUSE - MIRAR"
+text = "MIRAR: MOUSE  /  ANALOGICO DIR."
 horizontal_alignment = 1
 
 [node name="Attack" type="Label" parent="Panels/Controls"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.75, 0.96, 0.88, 0.8)
 theme_override_font_sizes/font_size = 16
-text = "CLIQUE ESQUERDO - ATACAR"
+text = "ATACAR: CLIQUE ESQ.  /  X"
 horizontal_alignment = 1
 
 [node name="Dash" type="Label" parent="Panels/Controls"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.75, 0.96, 0.88, 0.8)
 theme_override_font_sizes/font_size = 16
-text = "ESPACO - DASH"
+text = "DASH: ESPACO  /  A OU LT"
 horizontal_alignment = 1
 
 [node name="Parry" type="Label" parent="Panels/Controls"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.75, 0.96, 0.88, 0.8)
 theme_override_font_sizes/font_size = 16
-text = "CLIQUE DIREITO - PARRY"
+text = "PARRY: CLIQUE DIR.  /  RB OU RT"
 horizontal_alignment = 1
 
 [node name="Throw" type="Label" parent="Panels/Controls"]
@@ -283,14 +290,21 @@ horizontal_alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0.75, 0.96, 0.88, 0.8)
 theme_override_font_sizes/font_size = 16
-text = "F SEGURANDO - CURAR COM ALMA"
+text = "CURAR, SEGURANDO: F  /  Y"
+horizontal_alignment = 1
+
+[node name="Pause" type="Label" parent="Panels/Controls"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.96, 0.88, 0.8)
+theme_override_font_sizes/font_size = 16
+text = "PAUSAR: ESC  /  START"
 horizontal_alignment = 1
 
 [node name="Extract" type="Label" parent="Panels/Controls"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.75, 0.96, 0.88, 0.8)
 theme_override_font_sizes/font_size = 16
-text = "E - EXTRAIR INIMIGO COM 1 DE VIDA"
+text = "EXTRAIR INIMIGO COM 1 DE VIDA: E  /  B"
 horizontal_alignment = 1
 
 [node name="Back" type="Button" parent="Panels/Controls"]

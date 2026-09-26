@@ -14,14 +14,22 @@ signal wave_ended(wave: int)
 const MARKER_FRAMES := preload("res://resources/effects/spawn_marker.tres")
 
 @export var enemy_scenes: Array[PackedScene] = []
+## A partir de qual wave cada inimigo aparece (mesma ordem de enemy_scenes).
+## Faltou número? Vale a wave 1.
+@export var enemy_min_waves: Array[int] = []
+## Começa a wave 1 sozinho ao abrir a cena (o tutorial desliga isso).
+@export var auto_start := true
+## No intervalo, espera o jogador escolher uma melhoria (UpgradeScreen).
+@export var upgrades_enabled := true
 
 @export_group("Duration")
 ## Brotato: wave 1 = 20s, +5s por wave, até 60s.
 @export var base_duration := 20.0
 @export var duration_per_wave := 5.0
 @export var max_duration := 60.0
-## Intervalo entre uma wave e outra (onde a loja vai entrar no futuro).
+## Intervalo entre uma wave e outra (sem melhorias: tempo todo; com: depois da escolha).
 @export var break_time := 4.0
+@export var break_after_upgrade := 1.5
 
 @export_group("Spawning")
 @export var base_spawn_interval := 3.0
@@ -42,6 +50,8 @@ var in_wave := false
 var _spawn_timer := 0.0
 var _break_left := 0.0
 var _markers: Array[Node2D] = []
+## Intervalo parado esperando a escolha da melhoria.
+var _awaiting_upgrade := false
 
 @onready var game: Game = get_parent()
 
@@ -49,7 +59,8 @@ var _markers: Array[Node2D] = []
 func _ready() -> void:
 	# Espera o Game terminar o _ready (ele calcula os limites do mapa).
 	await game.ready
-	_start_wave(1)
+	if auto_start:
+		_start_wave(1)
 
 
 func _process(delta: float) -> void:
@@ -61,10 +72,16 @@ func _process(delta: float) -> void:
 			_spawn_group()
 		if time_left <= 0.0:
 			_end_wave()
-	else:
+	elif wave > 0 and not _awaiting_upgrade:
 		_break_left -= delta
 		if _break_left <= 0.0:
 			_start_wave(wave + 1)
+
+
+## A UpgradeScreen chama isto depois que o jogador escolhe: a próxima wave vem logo.
+func finish_upgrade() -> void:
+	_awaiting_upgrade = false
+	_break_left = break_after_upgrade
 
 
 func _start_wave(number: int) -> void:
@@ -78,6 +95,7 @@ func _start_wave(number: int) -> void:
 func _end_wave() -> void:
 	in_wave = false
 	_break_left = break_time
+	_awaiting_upgrade = upgrades_enabled
 
 	# Cancela os avisos que ainda não viraram monstro.
 	for marker in _markers:
@@ -116,13 +134,24 @@ func _spawn_group() -> void:
 	if group_size <= 0 or enemy_scenes.is_empty():
 		return
 
-	# O grupo nasce junto: um ponto central e os outros espalhados perto dele.
+	# O grupo nasce junto (e do MESMO tipo): um ponto central e os outros perto dele.
+	var scene := _pick_enemy()
 	var center := _random_spawn_point()
 	for i in group_size:
 		var offset := Vector2(randf_range(-20, 20), randf_range(-20, 20)) if i > 0 else Vector2.ZERO
 		var point: Vector2 = (center + offset).clamp(game.bounds.position + Vector2(16, 30),
 			game.bounds.end - Vector2(16, 8))
-		_telegraph(point, enemy_scenes.pick_random())
+		_telegraph(point, scene)
+
+
+## Sorteia um tipo de inimigo entre os já liberados nesta wave.
+func _pick_enemy() -> PackedScene:
+	var available: Array[PackedScene] = []
+	for i in enemy_scenes.size():
+		var min_wave := enemy_min_waves[i] if i < enemy_min_waves.size() else 1
+		if wave >= min_wave:
+			available.append(enemy_scenes[i])
+	return available.pick_random() if not available.is_empty() else enemy_scenes[0]
 
 
 func _random_spawn_point() -> Vector2:

@@ -9,18 +9,15 @@ var hitbox_on := false
 
 func enter() -> void:
 	enemy.velocity = Vector2.ZERO
+	# face() vira o sprite E o braço: a Hitbox tem o formato exato do respingo
+	# do desenho (1:1), então ela espelha junto com o sprite.
 	enemy.face(enemy.attack_direction)
-	# O "braço" aponta exatamente para a direção do golpe (inclusive cima/baixo).
-	enemy.attack_pivot.scale.x = 1
-	enemy.attack_pivot.rotation = enemy.attack_direction.angle()
 	enemy.sprite.play("attack")
 	hitbox_on = false
 
 
 func exit() -> void:
 	enemy.hitbox.deactivate()
-	enemy.attack_pivot.rotation = 0.0
-	enemy.face(enemy.attack_direction)   # devolve o scale.x certo do braço
 	enemy.start_attack_cooldown()
 
 

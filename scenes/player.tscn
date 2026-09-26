@@ -199,12 +199,6 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_he1uh"]
 radius = 4.1231055
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_hurtbox"]
-radius = 5.0
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_attack"]
-radius = 8.0
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_outline"]
 shader = ExtResource("18_outline")
 shader_parameter/fill_color = Color(0, 0, 0, 1)
@@ -382,8 +376,8 @@ collision_mask = 0
 monitoring = false
 script = ExtResource("13_hurtbox")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" unique_id=2011908102]
-shape = SubResource("CircleShape2D_hurtbox")
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Hurtbox"]
+polygon = PackedVector2Array(-4, -11, -2, -12, 2, -12, 4, -11, 4, 1, 3, 2, -3, 2, -4, 1)
 
 [node name="AttackPivot" type="Node2D" parent="." unique_id=1090232088]
 position = Vector2(0, -5)
@@ -397,8 +391,8 @@ monitorable = false
 script = ExtResource("14_hitbox")
 knockback_force = 180.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackPivot/AttackArea" unique_id=1289905558]
-shape = SubResource("CircleShape2D_attack")
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="AttackPivot/AttackArea"]
+polygon = PackedVector2Array(-14, -7, -13, -8, -10, -10, -7, -11, 5, -11, 8, -10, 10, -9, 14, -5, 14, 5, 10, 9, 8, 10, 5, 11, -7, 11, -10, 10, -13, 8, -14, 7)
 
 [node name="SlashEffect" type="AnimatedSprite2D" parent="AttackPivot" unique_id=1614075287]
 visible = false
